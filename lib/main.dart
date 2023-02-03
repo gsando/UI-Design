@@ -1,4 +1,5 @@
 import 'dart:async';
+// import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'UI Demo',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Workout App Demo'),
     );
   }
 }
@@ -54,12 +55,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    formatTime(timeString);
-    Timer.periodic(const Duration(seconds: 1), (Timer t) => _getCurrentTime());
-    super.initState();
-  }
-
-  void formatTime(String timeString) {
     String hour = (DateTime.now().hour < 10)
         ? "0${DateTime.now().hour}"
         : "${DateTime.now().hour}";
@@ -71,12 +66,44 @@ class _MyHomePageState extends State<MyHomePage> {
         : "${DateTime.now().second}";
 
     timeString = "$hour : $minute : $second";
-    // return timeString;
+    Timer.periodic(const Duration(seconds: 1), (Timer t) => _getCurrentTime());
+    super.initState();
   }
 
+  // @override
+  void formatTime(String timeString) {
+    setState(() {
+      String hour = (DateTime.now().hour < 10)
+          ? "0${DateTime.now().hour}"
+          : "${DateTime.now().hour}";
+      String minute = (DateTime.now().minute < 10)
+          ? "0${DateTime.now().minute}"
+          : "${DateTime.now().minute}";
+      String second = (DateTime.now().second < 10)
+          ? "0${DateTime.now().second}"
+          : "${DateTime.now().second}";
+
+      timeString = "$hour : $minute : $second";
+      // print('$timeString here in format');
+    });
+    // return timeString;
+    // print(timeString); //works to this point
+  }
+
+  // @override
   void _getCurrentTime() {
     setState(() {
-      formatTime(timeString);
+      String hour = (DateTime.now().hour < 10)
+          ? "0${DateTime.now().hour}"
+          : "${DateTime.now().hour}";
+      String minute = (DateTime.now().minute < 10)
+          ? "0${DateTime.now().minute}"
+          : "${DateTime.now().minute}";
+      String second = (DateTime.now().second < 10)
+          ? "0${DateTime.now().second}"
+          : "${DateTime.now().second}";
+
+      timeString = "$hour : $minute : $second";
     });
   }
 
@@ -88,6 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+    // print('$timeString here in build');
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -114,11 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(timeString)
-            // Text(
-            //   'hi',
-            //   style: Theme.of(context).textTheme.headlineMedium,
-            // ),
+            Text(timeString, style: const TextStyle(fontSize: 60))
           ],
         ),
       ),
