@@ -123,56 +123,92 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(timeString, style: const TextStyle(fontSize: 60))
-          ],
-        ),
-      ),
+          // Center is a layout widget. It takes a single child and positions it
+          // in the middle of the parent.
+          child: Column(children: [
+        Container(
+            //creating container for the row to add padding
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              // crossAxisAlignment: CrossAxisAlignment.center,
+              // children: Column(
+              // Column is also a layout widget. It takes a list of children and
+              // arranges them vertically. By default, it sizes itself to fit its
+              // children horizontally, and tries to be as tall as its parent.
+              //
+              // Invoke "debug painting" (press "p" in the console, choose the
+              // "Toggle Debug Paint" action from the Flutter Inspector in Android
+              // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
+              // to see the wireframe for each widget.
+              //
+              // Column has various properties to control how it sizes itself and
+              // how it positions its children. Here we use mainAxisAlignment to
+              // center the children vertically; the main axis here is the vertical
+              // axis because Columns are vertical (the cross axis would be
+              // horizontal).
+              // mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                    child: Text(
+                  timeString,
+                  style: const TextStyle(fontSize: 60),
+                  textAlign: TextAlign.center,
+                ))
+              ],
+            )),
+        Row(
+            //this is the second row of the single column (holds the placeholder widget)
+            // ignore: prefer_const_literals_to_create_immutables
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const <Widget>[Placeholder()])
+      ])),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.all_inbox),
             label: 'Plans',
-            backgroundColor: Colors.red,
+            // backgroundColor: Colors.red,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.timer_rounded),
             label: 'Timer',
-            backgroundColor: Colors.green,
+            // backgroundColor: Colors.green,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.bar_chart_rounded),
             label: 'Progress',
-            backgroundColor: Colors.purple,
+            // backgroundColor: Colors.purple,
           ),
         ],
         // currentIndex: _selectedIndex,
         selectedItemColor: Colors.amber[800],
-        // onTap: _onItemTapped,
+        //  onTap: _onItemTapped,
       ),
       // floatingActionButton: FloatingActionButton(
       //   onPressed: _incrementCounter,
-      //   tooltip: 'Increment',
+      //   tooltip: 'Increment',r
       //   child: const Icon(Icons.add),
       // ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+class SecondPage extends StatelessWidget {
+  const SecondPage({Key? key, required this.title}) : super(key: key);
+  final String title;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+      ),
+      body: Center(
+        child: TextButton(
+          onPressed: () {},
+          child: const Text('Go Back'),
+        ),
+      ),
     );
   }
 }
