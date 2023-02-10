@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+// import 'package:flutter/rendering.dart';
 
 void main() {
   runApp(const MyApp());
@@ -37,7 +37,8 @@ Future<void> navigate(BuildContext context, String route,
     Navigator.of(context, rootNavigator: isRootNavigator)
         .pushNamed(route, arguments: arguments);
 
-final homeKey = GlobalKey<NavigatorState>();
+final homeKey = GlobalKey<
+    NavigatorState>(); //These are global variables to be used for Navigator (the method that helps link different pages)
 final planKey = GlobalKey<NavigatorState>();
 final exKey = GlobalKey<NavigatorState>();
 final NavbarNotifier _navbarNotifier = NavbarNotifier();
@@ -57,6 +58,7 @@ class NavBarHandler extends StatefulWidget {
 
 class _NavBarHandlerState extends State<NavBarHandler>
     with SingleTickerProviderStateMixin {
+  //this method is what handles the bottomNavBar: showing items, transitions
   final _buildBody = const <Widget>[HomePage(), PlanPage(), ExPage()];
 
   late List<BottomNavigationBarItem> _bottomList = <BottomNavigationBarItem>[];
@@ -176,18 +178,18 @@ class _NavBarHandlerState extends State<NavBarHandler>
 class NavbarNotifier extends ChangeNotifier {
   int _index = 0;
   int get index => _index;
-  bool _hideBottomNavBar = false;
+  // bool _hideBottomNavBar = false;             //This variable was used to hide the bottom navigation with scrolling, but it was annoying so I disabled it lol
 
   set index(int x) {
     _index = x;
     notifyListeners();
   }
 
-  bool get hideBottomNavBar => _hideBottomNavBar;
-  set hideBottomNavBar(bool x) {
-    _hideBottomNavBar = x;
-    notifyListeners();
-  }
+  // bool get hideBottomNavBar => _hideBottomNavBar;    //Here is said method that calls method to hide the bottomNavBar
+  // set hideBottomNavBar(bool x) {
+  //   _hideBottomNavBar = x;
+  //   notifyListeners();
+  // }
 
   // pop routes from the nested navigator stack and not the main stack
   // this is done based on the currentIndex of the bottom navbar
@@ -457,7 +459,7 @@ class _HomeFeedsState extends State<HomeFeeds> {
     timeString = "$hour : $minute : $second";
     Timer.periodic(const Duration(seconds: 1), (Timer t) => _getCurrentTime());
     super.initState();
-    _addScrollListener();
+    // _addScrollListener();
   }
 
   void _getCurrentTime() {
@@ -476,20 +478,20 @@ class _HomeFeedsState extends State<HomeFeeds> {
     });
   }
 
-  void _addScrollListener() {
-    _scrollController.addListener(() {
-      if (_scrollController.position.userScrollDirection ==
-          ScrollDirection.forward) {
-        if (_navbarNotifier.hideBottomNavBar) {
-          _navbarNotifier.hideBottomNavBar = false;
-        }
-      } else {
-        if (!_navbarNotifier.hideBottomNavBar) {
-          _navbarNotifier.hideBottomNavBar = true;
-        }
-      }
-    });
-  }
+  // void _addScrollListener() {              //this acts like an actionListener for the scrollbar to hide the bottomNavBar
+  //   _scrollController.addListener(() {
+  //     if (_scrollController.position.userScrollDirection ==
+  //         ScrollDirection.forward) {
+  //       if (_navbarNotifier.hideBottomNavBar) {
+  //         _navbarNotifier.hideBottomNavBar = false;
+  //       }
+  //     } else {
+  //       if (!_navbarNotifier.hideBottomNavBar) {
+  //         _navbarNotifier.hideBottomNavBar = true;
+  //       }
+  //     }
+  //   });
+  // }
 
   @override
   void dispose() {
@@ -529,7 +531,7 @@ class _HomeFeedsState extends State<HomeFeeds> {
             children: const <Widget>[Placeholder()])
       ])),
     );
-    //   body: ListView.builder(
+    //   body: ListView.builder(              //ListView is a flutter method that creates an infinite list of items, disabled as we want a set number of items based on ones already entered
     //     controller: _scrollController,
     //     itemCount: 3,
     //     itemBuilder: (context, index) {
