@@ -185,12 +185,6 @@ class NavbarNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  // bool get hideBottomNavBar => _hideBottomNavBar;    //Here is said method that calls method to hide the bottomNavBar
-  // set hideBottomNavBar(bool x) {
-  //   _hideBottomNavBar = x;
-  //   notifyListeners();
-  // }
-
   // pop routes from the nested navigator stack and not the main stack
   // this is done based on the currentIndex of the bottom navbar
   // if the backButton is pressed on the initial route the app will be terminated
