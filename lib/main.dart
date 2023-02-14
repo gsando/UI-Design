@@ -386,14 +386,14 @@ class PlanPage extends StatelessWidget {
                   );
                 };
                 break;
-              case PlanComments.route:
-                final id = (settings.arguments as Map)['id'];
-                builder = (BuildContext _) {
-                  return PlanComments(
-                    id: id,
-                  );
-                };
-                break;
+              // case PlanComments.route:
+              //   final id = (settings.arguments as Map)['id'];
+              //   builder = (BuildContext _) {
+              //     return PlanComments(
+              //       id: id,
+              //     );
+              //   };
+              //   break;
               default:
                 builder = (BuildContext _) => const PlanList();
             }
@@ -434,6 +434,7 @@ class ExPage extends StatelessWidget {
 }
 
 class HomeFeeds extends StatefulWidget {
+  //creates state for home page
   const HomeFeeds({Key? key}) : super(key: key);
   static const String route = '/';
 
@@ -442,6 +443,7 @@ class HomeFeeds extends StatefulWidget {
 }
 
 class _HomeFeedsState extends State<HomeFeeds> {
+  //contains the page content for home screen
   final _scrollController = ScrollController();
   String timeString = '';
   @override
@@ -509,9 +511,8 @@ class _HomeFeedsState extends State<HomeFeeds> {
           // Center is a layout widget. It takes a single child and positions it
           // in the middle of the parent.
           child: Column(children: [
-        Container(
-            //creating container for the row to add padding
-            padding: const EdgeInsets.all(20),
+        Expanded(
+            flex: 1,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -523,12 +524,31 @@ class _HomeFeedsState extends State<HomeFeeds> {
                 ))
               ],
             )),
-        Row(
-
-            //this is the second row of the single column (holds the placeholder widget)
-            // ignore: prefer_const_literals_to_create_immutables
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const <Widget>[Placeholder()])
+        Expanded(
+            flex: 3,
+            child: Row(
+                //this is the second row of the single column (holds the placeholder widget)
+                // ignore: prefer_const_literals_to_create_immutables
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      shape: const CircleBorder(), //<-- SEE HERE
+                      minimumSize: MediaQuery.of(context).size,
+                      padding: const EdgeInsets.all(20),
+                    ),
+                    child: const Icon(
+                      //<-- SEE HERE
+                      Icons.stream_rounded,
+                      color: Colors.black,
+                      size: 200,
+                    ),
+                  ),
+                ])),
+        SizedBox(
+            height: kBottomNavigationBarHeight + 10,
+            width: MediaQuery.of(context).size.width)
       ])),
     );
     //   body: ListView.builder(              //ListView is a flutter method that creates an infinite list of items, disabled as we want a set number of items based on ones already entered
@@ -620,6 +640,7 @@ class PlanList extends StatefulWidget {
 }
 
 class _PlanListState extends State<PlanList> {
+  //contains content for the second page
   final _scrollController = ScrollController();
 
   @override
@@ -651,6 +672,7 @@ class _PlanListState extends State<PlanList> {
 }
 
 class PlanTile extends StatelessWidget {
+  //this will be used to show each of the exercise tiles / plans, will be shown on the second page.
   //this is for indiv. tiles in the Plan page
   final int index;
   const PlanTile({Key? key, required this.index}) : super(key: key);
@@ -677,6 +699,7 @@ class PlanTile extends StatelessWidget {
 }
 
 class PlanDetail extends StatelessWidget {
+  //will be changed to ExDescriptions
   //this is the detail within the Plan tiles
   final String id;
   const PlanDetail({Key? key, this.id = '1'}) : super(key: key);
@@ -697,47 +720,14 @@ class PlanDetail extends StatelessWidget {
               fallbackWidth: 300,
             ),
           ),
-          // TextButton(
-          //     onPressed: () {
-          //       _navbarNotifier.hideBottomNavBar = false;
-          //       navigate(context, PlanComments.route,
-          //           isRootNavigator: false, arguments: {'id': id.toString()});
-          //     },
-          //     child: const Text('show comments'))
         ],
       ),
     );
   }
 }
 
-class PlanComments extends StatelessWidget {
-  //this has been commented out as we will not need comments
-  final String id;
-  const PlanComments({Key? key, this.id = '1'}) : super(key: key);
-  static const String route = '/Plan/detail/comments';
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Comments on Plan $id'),
-      ),
-      body: ListView.builder(itemBuilder: (context, index) {
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SizedBox(
-            height: 60,
-            child: ListTile(
-              tileColor: Colors.grey.withOpacity(0.5),
-              title: Text('Comment $index'),
-            ),
-          ),
-        );
-      }),
-    );
-  }
-}
-
 class ExPageContent extends StatelessWidget {
+  //contains content for the exercises page (to enter)
   static const String route = '/';
 
   const ExPageContent({Key? key}) : super(key: key);
@@ -760,39 +750,51 @@ class ExPageContent extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Text('Enter an excercise'),
-                SizedBox(
-                  width: 10,
-                ),
-                SizedBox(
-                  width: 100,
-                  child: TextField(
-                    decoration: InputDecoration(),
+            Expanded(
+              flex: 1,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Text('Enter exercise name'),
+                  SizedBox(
+                    width: 10,
                   ),
-                ),
-              ],
+                  SizedBox(
+                    width: 100,
+                    child: TextField(
+                      decoration: InputDecoration(),
+                    ),
+                  ),
+                ],
+              ),
             ),
+            Expanded(
+                flex: 1,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Text('Enter the description'),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    SizedBox(
+                      width: 100,
+                      child: TextField(
+                        decoration: InputDecoration(),
+                      ),
+                    ),
+                  ],
+                )),
+            Expanded(
+                flex: 5,
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const <Widget>[Placeholder()])),
+            SizedBox(
+                height: kBottomNavigationBarHeight + 10,
+                width: MediaQuery.of(context).size.width)
           ],
         ),
-      ),
-    );
-  }
-}
-
-class ProfileEdit extends StatelessWidget {
-  static const String route = '/profile/edit';
-
-  const ProfileEdit({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Profile Edit')),
-      body: const Center(
-        child: Text('Notice this page does not have bottom navigation bar'),
       ),
     );
   }
