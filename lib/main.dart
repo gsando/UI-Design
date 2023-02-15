@@ -735,16 +735,51 @@ class ExPageContent extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const [
-                  Text('Enter exercise name'),
+                  // Text('Enter exercise name   '),
+                  // SizedBox(
+                  //   width: 10,
+                  // ),
+                  SizedBox(
+                    width: 300,
+                    child: TextField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: 'Enter the exercise name',
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Text(
+                    'Enter the estimated time to complete:   ',
+                    style: TextStyle(fontSize: 16),
+                  ),
                   SizedBox(
                     width: 10,
                   ),
                   SizedBox(
                     width: 100,
                     child: TextField(
-                      decoration: InputDecoration(),
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: 'Minutes',
+                      ),
                     ),
                   ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  SizedBox(
+                    width: 100,
+                    child: TextField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: 'Seconds',
+                      ),
+                    ),
+                  ),
+                  // Text('sec'),
                 ],
               ),
             ),
@@ -752,16 +787,31 @@ class ExPageContent extends StatelessWidget {
                 flex: 1,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text('Enter the description'),
+                  children: [
+                    // const Text(
+                    //   'Enter the description',
+                    //   style: TextStyle(fontSize: 14),
+                    // ),
+                    // const SizedBox(
+                    //   width: 10,
+                    // ),
                     SizedBox(
-                      width: 10,
-                    ),
-                    SizedBox(
-                      width: 100,
-                      child: TextField(
-                        decoration: InputDecoration(),
+                      width: MediaQuery.of(context).size.width - 300,
+                      child: const TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: 'Enter the description of the exercise',
+                        ),
                       ),
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          textStyle: const TextStyle(fontSize: 20)),
+                      onPressed: () {},
+                      child: const Text('Submit'),
                     ),
                   ],
                 )),
