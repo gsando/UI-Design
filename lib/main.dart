@@ -534,32 +534,18 @@ class _HomeFeedsState extends State<HomeFeeds> {
                     ),
                     child: const Icon(
                       //<-- SEE HERE
-                      Icons.stream_rounded,
-                      color: Colors.black,
+                      Icons
+                          .brightness_5_rounded, //auto_awesome_outlined, blur_on
+                      color: Colors.white,
                       size: 200,
                     ),
                   ),
                 ])),
         SizedBox(
-            height: kBottomNavigationBarHeight + 10,
+            height: kBottomNavigationBarHeight + 20,
             width: MediaQuery.of(context).size.width)
       ])),
     );
-    //   body: ListView.builder(              //ListView is a flutter method that creates an infinite list of items, disabled as we want a set number of items based on ones already entered
-    //     controller: _scrollController,
-    //     itemCount: 3,
-    //     itemBuilder: (context, index) {
-    //       return InkWell(
-    //           onTap: () {
-    //             _navbarNotifier.hideBottomNavBar = false;
-    //             navigate(context, FeedDetail.route,
-    //                 isRootNavigator: false,
-    //                 arguments: {'id': index.toString()});
-    //           },
-    //           child: FeedTile(index: index));
-    //     },
-    //   ),
-    // );
   }
 }
 
