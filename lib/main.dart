@@ -11,6 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Wellness App',
         theme: ThemeData(
           primarySwatch: Colors.indigo,
@@ -413,13 +414,13 @@ class ExPage extends StatelessWidget {
             WidgetBuilder builder;
             switch (settings.name) {
               case '/':
-                builder = (BuildContext _) => const ExPageContent();
+                builder = (BuildContext _) => ExPageContent();
                 break;
               // case ProfileEdit.route:
               //   builder = (BuildContext _) => const ProfileEdit();
               //   break;
               default:
-                builder = (BuildContext _) => const ExPageContent();
+                builder = (BuildContext _) => ExPageContent();
             }
             return MaterialPageRoute(builder: builder, settings: settings);
           }),
@@ -710,12 +711,22 @@ class ExPageContent extends StatelessWidget {
   //contains content for the exercises page (to enter)
   static const String route = '/';
 
-  const ExPageContent({Key? key}) : super(key: key);
+  ExPageContent({Key? key}) : super(key: key);
+
+  final _controllerName = TextEditingController();
+  final _controllerDes = TextEditingController();
+  final _controllerMin = TextEditingController();
+  final _controllerSec = TextEditingController();
+
+  void clearText() {
+    _controllerName.clear();
+    _controllerDes.clear();
+    _controllerMin.clear();
+    _controllerSec.clear();
+  }
 
   @override
   Widget build(BuildContext context) {
-    var _controller = TextEditingController();
-    var _controller2 = TextEditingController();
     return Scaffold(
       appBar: AppBar(
           centerTitle: false,
@@ -744,12 +755,12 @@ class ExPageContent extends StatelessWidget {
                   SizedBox(
                     width: 300,
                     child: TextField(
-                      controller: _controller,
+                      controller: _controllerName,
                       decoration: InputDecoration(
                           border: const OutlineInputBorder(),
                           hintText: 'Enter the exercise name',
                           suffixIcon: IconButton(
-                            onPressed: _controller.clear,
+                            onPressed: _controllerName.clear,
                             icon: const Icon(Icons.clear),
                           )),
                     ),
@@ -764,10 +775,11 @@ class ExPageContent extends StatelessWidget {
                   const SizedBox(
                     width: 10,
                   ),
-                  const SizedBox(
+                  SizedBox(
                     width: 100,
                     child: TextField(
-                      decoration: InputDecoration(
+                      controller: _controllerMin,
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         hintText: 'Minutes',
                       ),
@@ -776,10 +788,11 @@ class ExPageContent extends StatelessWidget {
                   const SizedBox(
                     width: 10,
                   ),
-                  const SizedBox(
+                  SizedBox(
                     width: 100,
                     child: TextField(
-                      decoration: InputDecoration(
+                      controller: _controllerSec,
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         hintText: 'Seconds',
                       ),
@@ -804,12 +817,12 @@ class ExPageContent extends StatelessWidget {
                     SizedBox(
                       width: MediaQuery.of(context).size.width - 300,
                       child: TextField(
-                        controller: _controller2,
+                        controller: _controllerDes,
                         decoration: InputDecoration(
                             border: const OutlineInputBorder(),
                             hintText: 'Enter the description of the exercise',
                             suffixIcon: IconButton(
-                              onPressed: _controller2.clear,
+                              onPressed: _controllerDes.clear,
                               icon: const Icon(Icons.clear),
                             )),
                       ),
@@ -823,7 +836,10 @@ class ExPageContent extends StatelessWidget {
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               textStyle: const TextStyle(fontSize: 20)),
-                          onPressed: () {},
+                          onPressed: () {
+                            // print(_controller.text);     //for debugging textFields values
+                            clearText();
+                          },
                           child: const Text('Submit'),
                         )),
                   ],
