@@ -714,6 +714,8 @@ class ExPageContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var _controller = TextEditingController();
+    var _controller2 = TextEditingController();
     return Scaffold(
       appBar: AppBar(
           centerTitle: false,
@@ -734,7 +736,7 @@ class ExPageContent extends StatelessWidget {
               flex: 1,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   // Text('Enter exercise name   '),
                   // SizedBox(
                   //   width: 10,
@@ -742,23 +744,27 @@ class ExPageContent extends StatelessWidget {
                   SizedBox(
                     width: 300,
                     child: TextField(
+                      controller: _controller,
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Enter the exercise name',
-                      ),
+                          border: const OutlineInputBorder(),
+                          hintText: 'Enter the exercise name',
+                          suffixIcon: IconButton(
+                            onPressed: _controller.clear,
+                            icon: const Icon(Icons.clear),
+                          )),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 20,
                   ),
-                  Text(
+                  const Text(
                     'Enter the estimated time to complete:   ',
                     style: TextStyle(fontSize: 16),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 100,
                     child: TextField(
                       decoration: InputDecoration(
@@ -767,10 +773,10 @@ class ExPageContent extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 100,
                     child: TextField(
                       decoration: InputDecoration(
@@ -797,22 +803,29 @@ class ExPageContent extends StatelessWidget {
                     // ),
                     SizedBox(
                       width: MediaQuery.of(context).size.width - 300,
-                      child: const TextField(
+                      child: TextField(
+                        controller: _controller2,
                         decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: 'Enter the description of the exercise',
-                        ),
+                            border: const OutlineInputBorder(),
+                            hintText: 'Enter the description of the exercise',
+                            suffixIcon: IconButton(
+                              onPressed: _controller2.clear,
+                              icon: const Icon(Icons.clear),
+                            )),
                       ),
                     ),
                     const SizedBox(
                       width: 20,
                     ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          textStyle: const TextStyle(fontSize: 20)),
-                      onPressed: () {},
-                      child: const Text('Submit'),
-                    ),
+                    SizedBox(
+                        height: 50, //height of button
+                        width: 100, //width of button
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              textStyle: const TextStyle(fontSize: 20)),
+                          onPressed: () {},
+                          child: const Text('Submit'),
+                        )),
                   ],
                 )),
             Expanded(
