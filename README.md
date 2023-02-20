@@ -15,3 +15,14 @@ NavBarNotifier is called when the index of the bottomNavBar is changed (one of t
 AnimatedNavBar and _AnimatedNavBarState is what makes the bottom navigation bar move and transition as different options are clicked
 
 HomePage acts as the directions for the route to the home page, which is _HomeFeedsState
+
+
+**Drift does not support web developement!**
+
+***When in developement***
+Run 
+    flutter build windows
+    flutter run
+    *select 1, windows*
+
+

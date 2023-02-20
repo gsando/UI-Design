@@ -1,10 +1,14 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-// import 'package:flutter/rendering.dart';
+import 'package:workout_app/data.dart';
+import 'package:drift/drift.dart' as drift;
+// import 'package:web_ffi/web_ffi.dart';
 
 void main() {
   runApp(const MyApp());
 }
+
+final db = MyDatabase();
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -713,10 +717,17 @@ class ExPageContent extends StatelessWidget {
 
   ExPageContent({Key? key}) : super(key: key);
 
+  late MyDatabase _db;
+
   final _controllerName = TextEditingController();
   final _controllerDes = TextEditingController();
   final _controllerMin = TextEditingController();
   final _controllerSec = TextEditingController();
+
+  // // @override
+  // void initState() {
+  //   _db = MyDatabase();
+  // }
 
   void clearText() {
     _controllerName.clear();
@@ -727,6 +738,7 @@ class ExPageContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _db = MyDatabase();
     return Scaffold(
       appBar: AppBar(
           centerTitle: false,
@@ -743,6 +755,23 @@ class ExPageContent extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // //start of test button
+            // ElevatedButton(
+            //   child: const Text(
+            //     'Show Pop-up',
+            //     style: TextStyle(
+            //       color: Colors.white,
+            //     ),
+            //   ),
+            //   // color: Colors.black,
+            //   onPressed: () {
+            //     showDialog(
+            //       context: context,
+            //       builder: (BuildContext context) => _buildPopupDialog(context),
+            //     );
+            //   },
+            // ),
+            // //end of test button
             Expanded(
               flex: 1,
               child: Row(
@@ -837,7 +866,27 @@ class ExPageContent extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                               textStyle: const TextStyle(fontSize: 20)),
                           onPressed: () {
-                            // print(_controller.text);     //for debugging textFields values
+                            final entity = ExerciseCompanion(
+                                title: drift.Value(_controllerName.text),
+                                description: drift.Value(_controllerDes.text),
+                                minutes: drift.Value(
+                                    int.tryParse(_controllerMin.text) == null
+                                        ? 0
+                                        : int.parse(_controllerMin.text)),
+                                seconds: drift.Value(
+                                    int.tryParse(_controllerSec.text) == null
+                                        ? 0
+                                        : int.parse(_controllerSec.text)));
+                            _db.insertExercise(entity);
+
+                            //start of popup
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) =>
+                                  _buildPopupDialog(context),
+                            );
+                            //end of pop up
+
                             clearText();
                           },
                           child: const Text('Submit'),
@@ -855,6 +904,28 @@ class ExPageContent extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildPopupDialog(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Popup example'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const <Widget>[
+          Text("Hello"),
+        ],
+      ),
+      actions: <Widget>[
+        ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          // textColor: Theme.of(context).primaryColor,
+          child: const Text('Close'),
+        ),
+      ],
     );
   }
 }
