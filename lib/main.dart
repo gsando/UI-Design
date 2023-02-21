@@ -849,6 +849,7 @@ class ExPageContent extends StatelessWidget {
                               textStyle: const TextStyle(fontSize: 20)),
                           onPressed: () {
                             addExercise();
+                            // _buildList();
                             showDialog(
                               context: context,
                               builder: (BuildContext context) =>
@@ -860,10 +861,9 @@ class ExPageContent extends StatelessWidget {
                   ],
                 )),
             Expanded(
-                flex: 5,
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const <Widget>[Placeholder()])),
+              flex: 5,
+              child: _buildList(),
+            ),
             SizedBox(
                 height: kBottomNavigationBarHeight + 10,
                 width: MediaQuery.of(context).size.width)
@@ -871,6 +871,42 @@ class ExPageContent extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildList() {
+    return FutureBuilder<List<ExerciseData>>(
+        future: _db.getExercises(),
+        builder: (context, snapshot) {
+          final List<ExerciseData>? exercises = snapshot.data;
+
+          if (snapshot.connectionState != ConnectionState.done) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(snapshot.error.toString()),
+            );
+          }
+
+          if (exercises != null) {
+            return ListView.builder(
+                itemCount: exercises.length,
+                itemBuilder: (context, index) {
+                  final exercise = exercises[index];
+                  return Card(
+                    child: Column(children: [
+                      Text(exercise.id.toString()),
+                      Text(exercise.title.toString()),
+                      Text(exercise.minutes.toString()),
+                      Text(exercise.seconds.toString()),
+                    ]),
+                  );
+                });
+          }
+
+          return const Text('Santa is coming');
+        });
   }
 
   Widget _buildPopupDialog(BuildContext context) {
@@ -884,6 +920,28 @@ class ExPageContent extends StatelessWidget {
             if (snapshot.connectionState != ConnectionState.done) {
               return const Center(child: CircularProgressIndicator());
             }
+
+            // if (snapshot.hasError) {
+            //   return Center(
+            //     child: Text(snapshot.error.toString()),
+            //   );
+            // }
+
+            // if (exercises != null) {
+            //   return ListView.builder(
+            //       itemCount: exercises.length,
+            //       itemBuilder: (context, index) {
+            //         final exercise = exercises[index];
+            //         return Card(
+            //           child: Column(children: [
+            //             Text(exercise.id.toString()),
+            //             Text(exercise.title.toString()),
+            //             Text(exercise.minutes.toString()),
+            //             Text(exercise.seconds.toString()),
+            //           ]),
+            //         );
+            //       });
+            // }
 
             return const Text('Santa is coming');
           }),
