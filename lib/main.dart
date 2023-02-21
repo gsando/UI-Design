@@ -729,11 +729,14 @@ class ExPageContent extends StatelessWidget {
   //   _db = MyDatabase();
   // }
 
-  void clearText() {
-    _controllerName.clear();
-    _controllerDes.clear();
-    _controllerMin.clear();
-    _controllerSec.clear();
+  @override
+  void dispose() {
+    _db.close();
+    _controllerName.dispose();
+    _controllerDes.dispose();
+    _controllerMin.dispose();
+    _controllerSec.dispose();
+    // super.dispose();
   }
 
   @override
@@ -755,32 +758,11 @@ class ExPageContent extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // //start of test button
-            // ElevatedButton(
-            //   child: const Text(
-            //     'Show Pop-up',
-            //     style: TextStyle(
-            //       color: Colors.white,
-            //     ),
-            //   ),
-            //   // color: Colors.black,
-            //   onPressed: () {
-            //     showDialog(
-            //       context: context,
-            //       builder: (BuildContext context) => _buildPopupDialog(context),
-            //     );
-            //   },
-            // ),
-            // //end of test button
             Expanded(
               flex: 1,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Text('Enter exercise name   '),
-                  // SizedBox(
-                  //   width: 10,
-                  // ),
                   SizedBox(
                     width: 300,
                     child: TextField(
@@ -866,28 +848,12 @@ class ExPageContent extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                               textStyle: const TextStyle(fontSize: 20)),
                           onPressed: () {
-                            final entity = ExerciseCompanion(
-                                title: drift.Value(_controllerName.text),
-                                description: drift.Value(_controllerDes.text),
-                                minutes: drift.Value(
-                                    int.tryParse(_controllerMin.text) == null
-                                        ? 0
-                                        : int.parse(_controllerMin.text)),
-                                seconds: drift.Value(
-                                    int.tryParse(_controllerSec.text) == null
-                                        ? 0
-                                        : int.parse(_controllerSec.text)));
-                            _db.insertExercise(entity);
-
-                            //start of popup
+                            addExercise();
                             showDialog(
                               context: context,
                               builder: (BuildContext context) =>
                                   _buildPopupDialog(context),
                             );
-                            //end of pop up
-
-                            clearText();
                           },
                           child: const Text('Submit'),
                         )),
@@ -910,13 +876,17 @@ class ExPageContent extends StatelessWidget {
   Widget _buildPopupDialog(BuildContext context) {
     return AlertDialog(
       title: const Text('Popup example'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: const <Widget>[
-          Text("Hello"),
-        ],
-      ),
+      content: FutureBuilder<List<ExerciseData>>(
+          future: _db.getExercises(),
+          builder: (context, snapshot) {
+            final List<ExerciseData>? exercises = snapshot.data;
+
+            if (snapshot.connectionState != ConnectionState.done) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            return const Text('Santa is coming');
+          }),
       actions: <Widget>[
         ElevatedButton(
           onPressed: () {
@@ -927,5 +897,23 @@ class ExPageContent extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  void addExercise() {
+    final entity = ExerciseCompanion(
+        title: drift.Value(_controllerName.text),
+        description: drift.Value(_controllerDes.text),
+        minutes: drift.Value(int.tryParse(_controllerMin.text) == null
+            ? 0
+            : int.parse(_controllerMin.text)),
+        seconds: drift.Value(int.tryParse(_controllerSec.text) == null
+            ? 0
+            : int.parse(_controllerSec.text)));
+    _db.insertExercise(entity);
+
+    _controllerName.clear();
+    _controllerDes.clear();
+    _controllerMin.clear();
+    _controllerSec.clear();
   }
 }
