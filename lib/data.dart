@@ -28,9 +28,12 @@ class MyDatabase extends _$MyDatabase {
     return await select(exercise).get();
   }
 
-  Future<ExerciseData> getExercise(int id) async {
-    return await (select(exercise)..where((tbl) => tbl.id.equals(id)))
-        .getSingle();
+  // Stream<List<Exercise>> watchEntriesinEx(Table e){
+  //   return (select(exercise)..where((t) => t.))
+  // }
+
+  Stream<ExerciseData> getExercise(int id) async* {
+    await (select(exercise)..where((tbl) => tbl.id.equals(id))).getSingle();
   }
 
   Future<bool> updateEx(ExerciseCompanion entity) async {

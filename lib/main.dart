@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:workout_app/data.dart';
 import 'package:drift/drift.dart' as drift;
 // import 'package:web_ffi/web_ffi.dart';
@@ -418,13 +419,13 @@ class ExPage extends StatelessWidget {
             WidgetBuilder builder;
             switch (settings.name) {
               case '/':
-                builder = (BuildContext _) => ExPageContent();
+                builder = (BuildContext _) => const ExScreen();
                 break;
               // case ProfileEdit.route:
               //   builder = (BuildContext _) => const ProfileEdit();
               //   break;
               default:
-                builder = (BuildContext _) => ExPageContent();
+                builder = (BuildContext _) => const ExScreen();
             }
             return MaterialPageRoute(builder: builder, settings: settings);
           }),
@@ -711,23 +712,32 @@ class PlanDetail extends StatelessWidget {
   }
 }
 
-class ExPageContent extends StatelessWidget {
+class ExScreen extends StatefulWidget {
+  const ExScreen({Key? key}) : super(key: key);
+
+  @override
+  State<ExScreen> createState() => ExPageContent();
+}
+
+class ExPageContent extends State<ExScreen> {
   //contains content for the exercises page (to enter)
   static const String route = '/';
 
-  ExPageContent({Key? key}) : super(key: key);
+  // late MyDatabase _db;
 
-  late MyDatabase _db;
+  final _db = MyDatabase();
 
   final _controllerName = TextEditingController();
   final _controllerDes = TextEditingController();
   final _controllerMin = TextEditingController();
   final _controllerSec = TextEditingController();
 
-  // // @override
-  // void initState() {
-  //   _db = MyDatabase();
-  // }
+  @override
+  void initState() {
+    Future forBuilder = _db.getExercises();
+    // _buildList();
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -741,7 +751,7 @@ class ExPageContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _db = MyDatabase();
+    // _db = MyDatabase();
     return Scaffold(
       appBar: AppBar(
           centerTitle: false,
@@ -818,13 +828,6 @@ class ExPageContent extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // const Text(
-                    //   'Enter the description',
-                    //   style: TextStyle(fontSize: 14),
-                    // ),
-                    // const SizedBox(
-                    //   width: 10,
-                    // ),
                     SizedBox(
                       width: MediaQuery.of(context).size.width - 300,
                       child: TextField(
@@ -849,12 +852,7 @@ class ExPageContent extends StatelessWidget {
                               textStyle: const TextStyle(fontSize: 20)),
                           onPressed: () {
                             addExercise();
-                            // _buildList();
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) =>
-                                  _buildPopupDialog(context),
-                            );
+                            setState(() {});
                           },
                           child: const Text('Submit'),
                         )),
@@ -874,6 +872,7 @@ class ExPageContent extends StatelessWidget {
   }
 
   Widget _buildList() {
+    // print("here in the build list method");
     return FutureBuilder<List<ExerciseData>>(
         future: _db.getExercises(),
         builder: (context, snapshot) {
@@ -898,8 +897,9 @@ class ExPageContent extends StatelessWidget {
                     child: Column(children: [
                       Text(exercise.id.toString()),
                       Text(exercise.title.toString()),
-                      Text(exercise.minutes.toString()),
-                      Text(exercise.seconds.toString()),
+                      Text(exercise.description.toString()),
+                      // Text(exercise.minutes.toString()),
+                      // Text(exercise.seconds.toString()),
                     ]),
                   );
                 });
@@ -907,54 +907,6 @@ class ExPageContent extends StatelessWidget {
 
           return const Text('Santa is coming');
         });
-  }
-
-  Widget _buildPopupDialog(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Popup example'),
-      content: FutureBuilder<List<ExerciseData>>(
-          future: _db.getExercises(),
-          builder: (context, snapshot) {
-            final List<ExerciseData>? exercises = snapshot.data;
-
-            if (snapshot.connectionState != ConnectionState.done) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            // if (snapshot.hasError) {
-            //   return Center(
-            //     child: Text(snapshot.error.toString()),
-            //   );
-            // }
-
-            // if (exercises != null) {
-            //   return ListView.builder(
-            //       itemCount: exercises.length,
-            //       itemBuilder: (context, index) {
-            //         final exercise = exercises[index];
-            //         return Card(
-            //           child: Column(children: [
-            //             Text(exercise.id.toString()),
-            //             Text(exercise.title.toString()),
-            //             Text(exercise.minutes.toString()),
-            //             Text(exercise.seconds.toString()),
-            //           ]),
-            //         );
-            //       });
-            // }
-
-            return const Text('Santa is coming');
-          }),
-      actions: <Widget>[
-        ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          // textColor: Theme.of(context).primaryColor,
-          child: const Text('Close'),
-        ),
-      ],
-    );
   }
 
   void addExercise() {
