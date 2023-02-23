@@ -731,6 +731,7 @@ class ExPageContent extends State<ExScreen> {
   final _controllerDes = TextEditingController();
   final _controllerMin = TextEditingController();
   final _controllerSec = TextEditingController();
+  final _scroll = ScrollController();
 
   @override
   void initState() {
@@ -860,7 +861,7 @@ class ExPageContent extends State<ExScreen> {
                 )),
             Expanded(
               flex: 5,
-              child: _buildList(),
+              child: _buildGrid(),
             ),
             SizedBox(
                 height: kBottomNavigationBarHeight + 10,
@@ -907,6 +908,53 @@ class ExPageContent extends State<ExScreen> {
 
           return const Text('Santa is coming');
         });
+  }
+
+  Widget _buildGrid() {
+    return FutureBuilder<List<ExerciseData>>(
+        future: _db.getExercises(),
+        builder: (context, snapshot) {
+          final List<ExerciseData>? exercises = snapshot.data;
+
+          if (snapshot.connectionState != ConnectionState.done) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(snapshot.error.toString()),
+            );
+          }
+
+          if (exercises != null) {
+            // print("here in the gridbuilder");
+            return GridView.builder(
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 300,
+                    childAspectRatio: 3 / 2,
+                    crossAxisSpacing: 20,
+                    mainAxisSpacing: 20),
+                controller: _scroll,
+                // reverse: true,
+                // shrinkWrap: true,
+                itemCount: exercises.length,
+                itemBuilder: (context, index) {
+                  final exercise = exercises[index];
+                  return Card(
+                    child: Column(children: [
+                      Text(exercise.id.toString()),
+                      Text(exercise.title.toString()),
+                      Text(exercise.description.toString()),
+                      // Text(exercise.minutes.toString()),
+                      // Text(exercise.seconds.toString()),
+                    ]),
+                  );
+                });
+          }
+          return const Text('Santa is coming');
+        });
+    //   ],
+    // );
   }
 
   void addExercise() {
