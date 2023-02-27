@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
+// import 'package:path_provider/path_provider.dart';
 import 'package:workout_app/data.dart';
 import 'package:drift/drift.dart' as drift;
 // import 'package:web_ffi/web_ffi.dart';
@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
         title: 'Wellness App',
         theme: ThemeData(
           primarySwatch: Colors.indigo,
+          useMaterial3: true,
         ),
         // routes: {
         //   // This route needs to be registered, Because
@@ -872,44 +873,6 @@ class ExPageContent extends State<ExScreen> {
     );
   }
 
-  Widget _buildList() {
-    // print("here in the build list method");
-    return FutureBuilder<List<ExerciseData>>(
-        future: _db.getExercises(),
-        builder: (context, snapshot) {
-          final List<ExerciseData>? exercises = snapshot.data;
-
-          if (snapshot.connectionState != ConnectionState.done) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (snapshot.hasError) {
-            return Center(
-              child: Text(snapshot.error.toString()),
-            );
-          }
-
-          if (exercises != null) {
-            return ListView.builder(
-                itemCount: exercises.length,
-                itemBuilder: (context, index) {
-                  final exercise = exercises[index];
-                  return Card(
-                    child: Column(children: [
-                      Text(exercise.id.toString()),
-                      Text(exercise.title.toString()),
-                      Text(exercise.description.toString()),
-                      // Text(exercise.minutes.toString()),
-                      // Text(exercise.seconds.toString()),
-                    ]),
-                  );
-                });
-          }
-
-          return const Text('Santa is coming');
-        });
-  }
-
   Widget _buildGrid() {
     return FutureBuilder<List<ExerciseData>>(
         future: _db.getExercises(),
@@ -930,7 +893,7 @@ class ExPageContent extends State<ExScreen> {
             // print("here in the gridbuilder");
             return GridView.builder(
                 gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 300,
+                    maxCrossAxisExtent: 200,
                     childAspectRatio: 3 / 2,
                     crossAxisSpacing: 20,
                     mainAxisSpacing: 20),
@@ -941,12 +904,13 @@ class ExPageContent extends State<ExScreen> {
                 itemBuilder: (context, index) {
                   final exercise = exercises[index];
                   return Card(
-                    child: Column(children: [
-                      Text(exercise.id.toString()),
-                      Text(exercise.title.toString()),
-                      Text(exercise.description.toString()),
-                      // Text(exercise.minutes.toString()),
-                      // Text(exercise.seconds.toString()),
+                    color: const Color.fromARGB(202, 242, 224, 255),
+                    child: Column(children: <Widget>[
+                      ListTile(
+                        // leading: Icon(Icons.album),
+                        title: Text(exercise.title.toString()),
+                        subtitle: Text(exercise.description.toString()),
+                      ),
                     ]),
                   );
                 });
