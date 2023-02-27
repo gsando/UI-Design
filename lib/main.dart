@@ -19,9 +19,11 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Wellness App',
         theme: ThemeData(
-          primarySwatch: Colors.indigo,
-          useMaterial3: true,
-        ),
+            // primarySwatch: Colors.indigo,
+            useMaterial3: true,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color.fromARGB(255, 151, 141, 179),
+            )),
         // routes: {
         //   // This route needs to be registered, Because
         //   //  we are pushing this on the main Navigator Stack on line 754 (isRootNavigator:true)
@@ -50,9 +52,9 @@ final planKey = GlobalKey<NavigatorState>();
 final exKey = GlobalKey<NavigatorState>();
 final NavbarNotifier _navbarNotifier = NavbarNotifier();
 List<Color> colors = [mediumPurple, lightYellow, lightBlue];
-const Color mediumPurple = Color.fromRGBO(219, 157, 255, 1);
-const Color lightYellow = Color.fromRGBO(247, 173, 62, 1);
-const Color lightBlue = Color.fromRGBO(101, 197, 189, 1);
+const Color mediumPurple = Color.fromRGBO(70, 107, 2, 1);
+const Color lightYellow = Color.fromRGBO(90, 138, 0, 1);
+const Color lightBlue = Color.fromRGBO(121, 187, 0, 1);
 const String placeHolderText = 'This is placeholder text to be replaced.';
 
 class NavBarHandler extends StatefulWidget {
@@ -314,7 +316,8 @@ class _AnimatedNavBarState extends State<AnimatedNavBar>
                 selectedItemColor: Colors.white,
                 items: widget.menuItems
                     .map((MenuItem menuItem) => BottomNavigationBarItem(
-                          backgroundColor: colors[widget.model.index],
+                          // backgroundColor: colors[widget.model.index],
+                          backgroundColor: Theme.of(context).primaryColor,
                           icon: Icon(menuItem.iconData),
                           label: menuItem.text,
                         ))
@@ -333,8 +336,9 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Theme(
       data: ThemeData(
-          colorScheme:
-              Theme.of(context).colorScheme.copyWith(primary: mediumPurple)),
+          // colorSchemeSeed: const Color(0xff6750a4),
+          colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color.fromARGB(255, 151, 141, 179))),
       child: Navigator(
           key: homeKey,
           initialRoute: '/',
@@ -368,8 +372,8 @@ class PlanPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Theme(
       data: ThemeData(
-          colorScheme:
-              Theme.of(context).colorScheme.copyWith(primary: colors[1])),
+          colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color.fromARGB(255, 151, 141, 179))),
       child: Navigator(
           key: planKey,
           initialRoute: '/',
@@ -411,8 +415,8 @@ class ExPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Theme(
       data: ThemeData(
-          colorScheme:
-              Theme.of(context).colorScheme.copyWith(primary: colors[2])),
+          colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color.fromARGB(255, 151, 141, 179))),
       child: Navigator(
           key: exKey,
           initialRoute: '/',
@@ -505,6 +509,7 @@ class _HomeFeedsState extends State<HomeFeeds> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // backgroundColor: const Color.fromARGB(172, 239, 255, 195),
       appBar: AppBar(
         title: const Text('Home Page'),
       ),
@@ -596,6 +601,7 @@ class FeedDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // backgroundColor: const Color.fromARGB(172, 239, 255, 195),
       appBar: AppBar(
         title: Text('Feed $feedId'),
       ),
@@ -644,6 +650,7 @@ class _PlanListState extends State<PlanList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // backgroundColor: const Color.fromARGB(172, 239, 255, 195),
       appBar: AppBar(
         title: const Text('Plans'),
       ),
@@ -755,6 +762,7 @@ class ExPageContent extends State<ExScreen> {
   Widget build(BuildContext context) {
     // _db = MyDatabase();
     return Scaffold(
+      // backgroundColor: const Color.fromARGB(172, 239, 255, 195),
       appBar: AppBar(
           centerTitle: false,
           // actions: [
@@ -903,15 +911,61 @@ class ExPageContent extends State<ExScreen> {
                 itemCount: exercises.length,
                 itemBuilder: (context, index) {
                   final exercise = exercises[index];
-                  return Card(
-                    color: const Color.fromARGB(202, 242, 224, 255),
-                    child: Column(children: <Widget>[
-                      ListTile(
-                        // leading: Icon(Icons.album),
-                        title: Text(exercise.title.toString()),
-                        subtitle: Text(exercise.description.toString()),
+                  return AnimatedContainer(
+                    duration: const Duration(milliseconds: 100),
+                    child: InkWell(
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: ((context) => AlertDialog(
+                                  title: Text(exercise.title.toString()),
+                                  content:
+                                      Text(exercise.description.toString()),
+                                  actions: <Widget>[
+                                    TextButton(
+                                        onPressed: () => {
+                                              // _db.deleteExercise(exercise.id),
+                                              setState(() {
+                                                _db.deleteExercise(exercise.id);
+                                              }),
+                                              Navigator.pop(context)
+                                            },
+                                        child: const Text("Delete")),
+                                    TextButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        child: const Text("OK"))
+                                  ],
+                                )));
+                      },
+                      child: Card(
+                        color: Color.fromARGB(151, 255, 143, 143),
+                        child: Column(children: <Widget>[
+                          Expanded(
+                              flex: 2,
+                              child: ListTile(
+                                // leading: Icon(Icons.album),
+                                title: Text(
+                                  exercise.title.toString(),
+                                  style: const TextStyle(fontSize: 20),
+                                ),
+                                // subtitle: Text(exercise.description.toString()),
+                              )),
+                          Expanded(
+                              flex: 1,
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: <Widget>[
+                                    IconButton(
+                                        onPressed: () => {
+                                              setState(() {
+                                                _db.deleteExercise(exercise.id);
+                                              }),
+                                            },
+                                        icon: const Icon(Icons.delete))
+                                  ])),
+                        ]),
                       ),
-                    ]),
+                    ),
                   );
                 });
           }

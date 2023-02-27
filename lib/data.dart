@@ -10,7 +10,7 @@ part 'data.g.dart';
 class Exercise extends Table {
   //exercise table with default values of 0 for the minutes/ seconds
   IntColumn get id => integer().autoIncrement()();
-  TextColumn get title => text().withLength(min: 1, max: 32)();
+  TextColumn get title => text().withLength(min: 1, max: 100)();
   TextColumn get description => text().named('body')();
   IntColumn get minutes => integer().withDefault(const Constant(0))();
   IntColumn get seconds => integer().withDefault(const Constant(0))();
