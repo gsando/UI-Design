@@ -739,11 +739,13 @@ class ExPageContent extends State<ExScreen> {
   final _controllerDes = TextEditingController();
   final _controllerMin = TextEditingController();
   final _controllerSec = TextEditingController();
+  final _controllerTitleUpdate = TextEditingController();
+  final _controllerDesUpdate = TextEditingController();
   final _scroll = ScrollController();
 
   @override
   void initState() {
-    Future forBuilder = _db.getExercises();
+    // Future forBuilder = _db.getExercises();
     // _buildList();
     super.initState();
   }
@@ -755,6 +757,8 @@ class ExPageContent extends State<ExScreen> {
     _controllerDes.dispose();
     _controllerMin.dispose();
     _controllerSec.dispose();
+    _controllerTitleUpdate.dispose();
+    _controllerDesUpdate.dispose();
     // super.dispose();
   }
 
@@ -918,6 +922,9 @@ class ExPageContent extends State<ExScreen> {
                         showDialog(
                             context: context,
                             builder: ((context) => AlertDialog(
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(32.0))),
                                   title: Text(exercise.title.toString()),
                                   content:
                                       Text(exercise.description.toString()),
@@ -938,32 +945,108 @@ class ExPageContent extends State<ExScreen> {
                                 )));
                       },
                       child: Card(
-                        color: Color.fromARGB(151, 255, 143, 143),
-                        child: Column(children: <Widget>[
-                          Expanded(
-                              flex: 2,
-                              child: ListTile(
-                                // leading: Icon(Icons.album),
-                                title: Text(
-                                  exercise.title.toString(),
-                                  style: const TextStyle(fontSize: 20),
-                                ),
-                                // subtitle: Text(exercise.description.toString()),
-                              )),
-                          Expanded(
-                              flex: 1,
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: <Widget>[
-                                    IconButton(
-                                        onPressed: () => {
-                                              setState(() {
-                                                _db.deleteExercise(exercise.id);
-                                              }),
-                                            },
-                                        icon: const Icon(Icons.delete))
-                                  ])),
-                        ]),
+                        color: const Color.fromARGB(151, 255, 143, 143),
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Expanded(
+                                  flex: 2,
+                                  child: ListTile(
+                                    // leading: Icon(Icons.album),
+                                    title: Center(
+                                        child: Text(
+                                      exercise.title.toString(),
+                                      style: const TextStyle(fontSize: 20),
+                                    )),
+                                    // trailing: const Icon(Icons.more_horiz),
+                                    // subtitle: Text(exercise.description.toString()),
+                                  )),
+                              Expanded(
+                                  flex: 1,
+                                  child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: <Widget>[
+                                        IconButton(
+                                            onPressed: () => {
+                                                  setState(() {
+                                                    _db.deleteExercise(
+                                                        exercise.id);
+                                                  }),
+                                                },
+                                            icon: const Icon(Icons.delete)),
+                                        IconButton(
+                                            onPressed: () => {
+                                                  showDialog(
+                                                      context: context,
+                                                      builder:
+                                                          ((context) =>
+                                                              AlertDialog(
+                                                                shape: const RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.all(
+                                                                            Radius.circular(32.0))),
+                                                                title:
+                                                                    TextField(
+                                                                  controller: _controllerTitleUpdate
+                                                                    ..text = exercise
+                                                                        .title
+                                                                        .toString(),
+                                                                  decoration: InputDecoration(
+                                                                      // border:
+                                                                      //     const OutlineInputBorder(),
+                                                                      suffixIcon: IconButton(
+                                                                    onPressed:
+                                                                        _controllerTitleUpdate
+                                                                            .clear,
+                                                                    icon: const Icon(
+                                                                        Icons
+                                                                            .clear),
+                                                                  )),
+                                                                ),
+                                                                content:
+                                                                    TextField(
+                                                                  controller: _controllerDesUpdate
+                                                                    ..text = exercise
+                                                                        .description
+                                                                        .toString(),
+                                                                  decoration: InputDecoration(
+                                                                      // border: const OutlineInputBorder(),
+                                                                      // labelText: exercise
+                                                                      //     .description
+                                                                      //     .toString(),
+                                                                      suffixIcon: IconButton(
+                                                                    onPressed:
+                                                                        _controllerDesUpdate
+                                                                            .clear,
+                                                                    icon: const Icon(
+                                                                        Icons
+                                                                            .clear),
+                                                                  )),
+                                                                ),
+                                                                actions: <
+                                                                    Widget>[
+                                                                  TextButton(
+                                                                      onPressed: () =>
+                                                                          Navigator.pop(
+                                                                              context),
+                                                                      child: const Text(
+                                                                          "Cancel")),
+                                                                  TextButton(
+                                                                      onPressed:
+                                                                          () =>
+                                                                              {
+                                                                                updateExercise(exercise.id),
+                                                                                Navigator.pop(context),
+                                                                                setState(() {})
+                                                                              },
+                                                                      child: const Text(
+                                                                          "Update")),
+                                                                ],
+                                                              )))
+                                                },
+                                            icon: const Icon(Icons.edit))
+                                      ])),
+                            ]),
                       ),
                     ),
                   );
@@ -991,5 +1074,21 @@ class ExPageContent extends State<ExScreen> {
     _controllerDes.clear();
     _controllerMin.clear();
     _controllerSec.clear();
+  }
+
+  void updateExercise(int id) {
+    final entity = ExerciseCompanion(
+      id: drift.Value(id),
+      title: drift.Value(_controllerTitleUpdate.text),
+      description: drift.Value(_controllerDesUpdate.text),
+      // minutes: drift.Value(int.tryParse(_controllerMin.text) == null
+      //     ? 0
+      //     : int.parse(_controllerMin.text)),
+      // seconds: drift.Value(int.tryParse(_controllerSec.text) == null
+      //     ? 0
+      //     : int.parse(_controllerSec.text)));
+    );
+
+    _db.updateEx(entity);
   }
 }
