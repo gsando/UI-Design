@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'main.dart';
-// import 'package:flutter/services.dart';
-// import 'package:workout_app/data.dart';
-// import 'package:drift/drift.dart' as drift;
+import 'homePage.dart';
+import 'planPage.dart';
+import 'exPage.dart';
 
 final homeKey = GlobalKey<
     NavigatorState>(); //These are global variables to be used for Navigator (the method that helps link different pages)
@@ -204,5 +203,179 @@ class NavbarNotifier extends ChangeNotifier {
       default:
         break;
     }
+  }
+}
+
+class MenuItem {
+  const MenuItem(this.iconData, this.text);
+  final IconData iconData;
+  final String text;
+}
+
+Future<void> navigate(BuildContext context, String route,
+        {bool isDialog = false,
+        bool isRootNavigator = true,
+        Map<String, dynamic>? arguments}) =>
+    Navigator.of(context, rootNavigator: isRootNavigator)
+        .pushNamed(route, arguments: arguments);
+
+const String placeHolderText = 'This is placeholder text to be replaced.';
+
+class AnimatedNavBar extends StatefulWidget {
+  const AnimatedNavBar(
+      {Key? key,
+      required this.model,
+      required this.menuItems,
+      required this.onItemTapped})
+      : super(key: key);
+  final List<MenuItem> menuItems;
+  final NavbarNotifier model;
+  final Function(int) onItemTapped;
+
+  @override
+  _AnimatedNavBarState createState() => _AnimatedNavBarState();
+}
+
+class _AnimatedNavBarState extends State<AnimatedNavBar>
+    with SingleTickerProviderStateMixin {
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+        duration: const Duration(milliseconds: 500), vsync: this)
+      ..addListener(() => setState(() {}));
+    animation = Tween(begin: 0.0, end: 100.0).animate(_controller);
+  }
+
+  late AnimationController _controller;
+  late Animation<double> animation;
+  bool isHidden = false;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+        animation: animation,
+        builder: (BuildContext context, Widget? child) {
+          return Transform.translate(
+            offset: Offset(0, animation.value),
+            child: Container(
+              decoration: BoxDecoration(boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 12,
+                  spreadRadius: 2,
+                  offset: const Offset(2, -2),
+                ),
+              ]),
+              child: BottomNavigationBar(
+                // backgroundColor: Theme.of(context).colorScheme.primary,
+                type: BottomNavigationBarType.shifting,
+                currentIndex: widget.model.index,
+                onTap: (x) {
+                  widget.onItemTapped(x);
+                },
+                elevation: 16.0,
+                showUnselectedLabels: true,
+                unselectedItemColor: Colors.white54,
+                selectedItemColor: Colors.white,
+                items: widget.menuItems
+                    .map((MenuItem menuItem) => BottomNavigationBarItem(
+                          // backgroundColor: colors[widget.model.index],
+                          backgroundColor:
+                              //     // const Color.fromARGB(244, 255, 45, 45),
+                              Theme.of(context).colorScheme.secondary,
+                          // Theme.of(context).bottomNavigationBarTheme.copyWith(backgroundColor: Theme.of(context).colorScheme.primary),
+                          icon: Icon(menuItem.iconData),
+                          label: menuItem.text,
+                        ))
+                    .toList(),
+              ),
+            ),
+          );
+        });
+  }
+}
+
+class HomePage extends StatelessWidget {
+  const HomePage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Navigator(
+        key: homeKey,
+        initialRoute: '/',
+        onGenerateRoute: (RouteSettings settings) {
+          WidgetBuilder builder;
+          switch (settings.name) {
+            case '/':
+              builder = (BuildContext _) => const Home();
+              break;
+            default:
+              builder = (BuildContext _) => const Home();
+          }
+          return MaterialPageRoute(builder: builder, settings: settings);
+        });
+  }
+}
+
+class PlanPage extends StatelessWidget {
+  const PlanPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Navigator(
+        key: planKey,
+        initialRoute: '/',
+        onGenerateRoute: (RouteSettings settings) {
+          WidgetBuilder builder;
+          switch (settings.name) {
+            case '/':
+              builder = (BuildContext _) => const PlanList();
+              break;
+
+            // case PlanComments.route:
+            //   final id = (settings.arguments as Map)['id'];
+            //   builder = (BuildContext _) {
+            //     return PlanComments(
+            //       id: id,
+            //     );
+            //   };
+            //   break;
+            default:
+              builder = (BuildContext _) => const PlanList();
+          }
+          return MaterialPageRoute(builder: builder, settings: settings);
+        });
+  }
+}
+
+class ExPage extends StatelessWidget {
+  const ExPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Navigator(
+        key: exKey,
+        initialRoute: '/',
+        onGenerateRoute: (RouteSettings settings) {
+          WidgetBuilder builder;
+          switch (settings.name) {
+            case '/':
+              builder = (BuildContext _) => const ExScreen();
+              break;
+            // case ProfileEdit.route:
+            //   builder = (BuildContext _) => const ProfileEdit();
+            //   break;
+            default:
+              builder = (BuildContext _) => const ExScreen();
+          }
+          return MaterialPageRoute(builder: builder, settings: settings);
+        });
   }
 }

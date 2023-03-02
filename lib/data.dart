@@ -28,10 +28,6 @@ class MyDatabase extends _$MyDatabase {
     return await select(exercise).get();
   }
 
-  // Stream<List<Exercise>> watchEntriesinEx(Table e){
-  //   return (select(exercise)..where((t) => t.))
-  // }
-
   Future<ExerciseData> getExercise(int id) async {
     return await (select(exercise)..where((tbl) => tbl.id.equals(id)))
         .getSingle();
