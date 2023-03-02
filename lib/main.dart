@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 // import 'package:path_provider/path_provider.dart';
 import 'package:workout_app/data.dart';
 import 'package:drift/drift.dart' as drift;
@@ -10,20 +11,39 @@ void main() {
 }
 
 final db = MyDatabase();
+final _defaultLightColorScheme =
+    ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 166, 118, 255));
+
+final _defaultDarkColorScheme =
+    _defaultLightColorScheme.copyWith(brightness: Brightness.dark);
+
+ThemeMode? _themeMode;
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  // static final _defaultLightColorScheme =
+  // ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 187, 94, 196));
+
+  // static final _defaultDarkColorScheme = ColorScheme.fromSwatch(
+  //     primarySwatch: Colors.purple, brightness: Brightness.dark);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Wellness App',
         theme: ThemeData(
-            // primarySwatch: Colors.indigo,
-            useMaterial3: true,
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color.fromARGB(255, 151, 141, 179),
-            )),
+          // primarySwatch: Colors.indigo,
+          useMaterial3: true,
+          colorScheme: _defaultLightColorScheme,
+        ),
+        darkTheme: ThemeData(
+          // primarySwatch: Colors.indigo,
+          useMaterial3: true,
+          colorScheme: _defaultDarkColorScheme,
+        ),
+        themeMode: ThemeMode.light,
         // routes: {
         //   // This route needs to be registered, Because
         //   //  we are pushing this on the main Navigator Stack on line 754 (isRootNavigator:true)
@@ -51,10 +71,10 @@ final homeKey = GlobalKey<
 final planKey = GlobalKey<NavigatorState>();
 final exKey = GlobalKey<NavigatorState>();
 final NavbarNotifier _navbarNotifier = NavbarNotifier();
-List<Color> colors = [mediumPurple, lightYellow, lightBlue];
-const Color mediumPurple = Color.fromRGBO(70, 107, 2, 1);
-const Color lightYellow = Color.fromRGBO(90, 138, 0, 1);
-const Color lightBlue = Color.fromRGBO(121, 187, 0, 1);
+// List<Color> colors = [mediumPurple, lightYellow, lightBlue];
+// const Color mediumPurple = Color.fromRGBO(70, 107, 2, 1);
+// const Color lightYellow = Color.fromRGBO(90, 138, 0, 1);
+// const Color lightBlue = Color.fromRGBO(121, 187, 0, 1);
 const String placeHolderText = 'This is placeholder text to be replaced.';
 
 class NavBarHandler extends StatefulWidget {
@@ -94,6 +114,7 @@ class _NavBarHandlerState extends State<NavBarHandler>
     _bottomList = List.generate(
         _buildBody.length,
         (index) => BottomNavigationBarItem(
+              // backgroundColor: Theme.of(context).colorScheme.primary,
               icon: Icon(menuItemlist[index].iconData),
               label: menuItemlist[index].text,
             )).toList();
@@ -305,6 +326,7 @@ class _AnimatedNavBarState extends State<AnimatedNavBar>
                 ),
               ]),
               child: BottomNavigationBar(
+                // backgroundColor: Theme.of(context).colorScheme.primary,
                 type: BottomNavigationBarType.shifting,
                 currentIndex: widget.model.index,
                 onTap: (x) {
@@ -317,7 +339,10 @@ class _AnimatedNavBarState extends State<AnimatedNavBar>
                 items: widget.menuItems
                     .map((MenuItem menuItem) => BottomNavigationBarItem(
                           // backgroundColor: colors[widget.model.index],
-                          backgroundColor: Theme.of(context).primaryColor,
+                          backgroundColor:
+                              //     // const Color.fromARGB(244, 255, 45, 45),
+                              Theme.of(context).colorScheme.secondary,
+                          // Theme.of(context).bottomNavigationBarTheme.copyWith(backgroundColor: Theme.of(context).colorScheme.primary),
                           icon: Icon(menuItem.iconData),
                           label: menuItem.text,
                         ))
@@ -334,34 +359,28 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: ThemeData(
-          // colorSchemeSeed: const Color(0xff6750a4),
-          colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color.fromARGB(255, 151, 141, 179))),
-      child: Navigator(
-          key: homeKey,
-          initialRoute: '/',
-          onGenerateRoute: (RouteSettings settings) {
-            WidgetBuilder builder;
-            switch (settings.name) {
-              case '/':
-                builder = (BuildContext _) => const HomeFeeds();
-                break;
-              case FeedDetail.route:
-                builder = (BuildContext _) {
-                  final id = (settings.arguments as Map)['id'];
-                  return FeedDetail(
-                    feedId: id,
-                  );
-                };
-                break;
-              default:
-                builder = (BuildContext _) => const HomeFeeds();
-            }
-            return MaterialPageRoute(builder: builder, settings: settings);
-          }),
-    );
+    return Navigator(
+        key: homeKey,
+        initialRoute: '/',
+        onGenerateRoute: (RouteSettings settings) {
+          WidgetBuilder builder;
+          switch (settings.name) {
+            case '/':
+              builder = (BuildContext _) => const HomeFeeds();
+              break;
+            case FeedDetail.route:
+              builder = (BuildContext _) {
+                final id = (settings.arguments as Map)['id'];
+                return FeedDetail(
+                  feedId: id,
+                );
+              };
+              break;
+            default:
+              builder = (BuildContext _) => const HomeFeeds();
+          }
+          return MaterialPageRoute(builder: builder, settings: settings);
+        });
   }
 }
 
@@ -370,41 +389,36 @@ class PlanPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color.fromARGB(255, 151, 141, 179))),
-      child: Navigator(
-          key: planKey,
-          initialRoute: '/',
-          onGenerateRoute: (RouteSettings settings) {
-            WidgetBuilder builder;
-            switch (settings.name) {
-              case '/':
-                builder = (BuildContext _) => const PlanList();
-                break;
-              case PlanDetail.route:
-                final id = (settings.arguments as Map)['id'];
-                builder = (BuildContext _) {
-                  return PlanDetail(
-                    id: id,
-                  );
-                };
-                break;
-              // case PlanComments.route:
-              //   final id = (settings.arguments as Map)['id'];
-              //   builder = (BuildContext _) {
-              //     return PlanComments(
-              //       id: id,
-              //     );
-              //   };
-              //   break;
-              default:
-                builder = (BuildContext _) => const PlanList();
-            }
-            return MaterialPageRoute(builder: builder, settings: settings);
-          }),
-    );
+    return Navigator(
+        key: planKey,
+        initialRoute: '/',
+        onGenerateRoute: (RouteSettings settings) {
+          WidgetBuilder builder;
+          switch (settings.name) {
+            case '/':
+              builder = (BuildContext _) => const PlanList();
+              break;
+            case PlanDetail.route:
+              final id = (settings.arguments as Map)['id'];
+              builder = (BuildContext _) {
+                return PlanDetail(
+                  id: id,
+                );
+              };
+              break;
+            // case PlanComments.route:
+            //   final id = (settings.arguments as Map)['id'];
+            //   builder = (BuildContext _) {
+            //     return PlanComments(
+            //       id: id,
+            //     );
+            //   };
+            //   break;
+            default:
+              builder = (BuildContext _) => const PlanList();
+          }
+          return MaterialPageRoute(builder: builder, settings: settings);
+        });
   }
 }
 
@@ -413,28 +427,23 @@ class ExPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color.fromARGB(255, 151, 141, 179))),
-      child: Navigator(
-          key: exKey,
-          initialRoute: '/',
-          onGenerateRoute: (RouteSettings settings) {
-            WidgetBuilder builder;
-            switch (settings.name) {
-              case '/':
-                builder = (BuildContext _) => const ExScreen();
-                break;
-              // case ProfileEdit.route:
-              //   builder = (BuildContext _) => const ProfileEdit();
-              //   break;
-              default:
-                builder = (BuildContext _) => const ExScreen();
-            }
-            return MaterialPageRoute(builder: builder, settings: settings);
-          }),
-    );
+    return Navigator(
+        key: exKey,
+        initialRoute: '/',
+        onGenerateRoute: (RouteSettings settings) {
+          WidgetBuilder builder;
+          switch (settings.name) {
+            case '/':
+              builder = (BuildContext _) => const ExScreen();
+              break;
+            // case ProfileEdit.route:
+            //   builder = (BuildContext _) => const ProfileEdit();
+            //   break;
+            default:
+              builder = (BuildContext _) => const ExScreen();
+          }
+          return MaterialPageRoute(builder: builder, settings: settings);
+        });
   }
 }
 
@@ -509,9 +518,24 @@ class _HomeFeedsState extends State<HomeFeeds> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: const Color.fromARGB(172, 239, 255, 195),
+      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
       appBar: AppBar(
-        title: const Text('Home Page'),
+        title: Text(
+          'Home Page',
+          style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+        ),
+        backgroundColor: Theme.of(context).colorScheme.secondary,
+        // actions: [
+        //   IconButton(
+        //     icon: Icon(
+        //       Icons.dark_mode,
+        //       color: Theme.of(context).colorScheme.onSecondary,
+        //     ),
+        //     onPressed: () {
+        //       setState(() {});
+        //     },
+        //   )
+        // ],
       ),
       body: Center(
           // Center is a layout widget. It takes a single child and positions it
@@ -540,15 +564,17 @@ class _HomeFeedsState extends State<HomeFeeds> {
                   ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
-                      shape: const CircleBorder(), //<-- SEE HERE
-                      minimumSize: MediaQuery.of(context).size,
-                      padding: const EdgeInsets.all(20),
-                    ),
+                        shape: const CircleBorder(), //<-- SEE HERE
+                        minimumSize: MediaQuery.of(context).size,
+                        padding: const EdgeInsets.all(20),
+                        backgroundColor: Theme.of(context).colorScheme.tertiary,
+                        foregroundColor:
+                            Theme.of(context).colorScheme.tertiaryContainer),
                     child: const Icon(
                       //<-- SEE HERE
                       Icons
                           .brightness_5_rounded, //auto_awesome_outlined, blur_on
-                      color: Colors.white,
+                      // color: Theme.of(context).colorScheme.tertiaryContainer,
                       size: 200,
                     ),
                   ),
@@ -651,8 +677,13 @@ class _PlanListState extends State<PlanList> {
   Widget build(BuildContext context) {
     return Scaffold(
       // backgroundColor: const Color.fromARGB(172, 239, 255, 195),
+      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
       appBar: AppBar(
-        title: const Text('Plans'),
+        title: Text(
+          'Plans',
+          style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+        ),
+        backgroundColor: Theme.of(context).colorScheme.secondary,
       ),
       body: const Center(
         child: Text(
@@ -766,9 +797,10 @@ class ExPageContent extends State<ExScreen> {
   Widget build(BuildContext context) {
     // _db = MyDatabase();
     return Scaffold(
-      // backgroundColor: const Color.fromARGB(172, 239, 255, 195),
+      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
       appBar: AppBar(
           centerTitle: false,
+          backgroundColor: Theme.of(context).colorScheme.secondary,
           // actions: [
           //   IconButton(
           //     icon: const Icon(Icons.edit),
@@ -777,7 +809,10 @@ class ExPageContent extends State<ExScreen> {
           //     },
           //   )
           // ],
-          title: const Text('Excercises')),
+          title: Text(
+            'Excercises',
+            style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+          )),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -813,6 +848,10 @@ class ExPageContent extends State<ExScreen> {
                   SizedBox(
                     width: 100,
                     child: TextField(
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
+                      // keyboardType: TextInputType.number,
                       controller: _controllerMin,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
@@ -826,6 +865,9 @@ class ExPageContent extends State<ExScreen> {
                   SizedBox(
                     width: 100,
                     child: TextField(
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
                       controller: _controllerSec,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
@@ -922,6 +964,9 @@ class ExPageContent extends State<ExScreen> {
                         showDialog(
                             context: context,
                             builder: ((context) => AlertDialog(
+                                  backgroundColor: Theme.of(context)
+                                      .colorScheme
+                                      .tertiaryContainer,
                                   shape: const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(32.0))),
@@ -945,7 +990,7 @@ class ExPageContent extends State<ExScreen> {
                                 )));
                       },
                       child: Card(
-                        color: const Color.fromARGB(151, 255, 143, 143),
+                        color: Theme.of(context).colorScheme.tertiaryContainer,
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
@@ -956,7 +1001,11 @@ class ExPageContent extends State<ExScreen> {
                                     title: Center(
                                         child: Text(
                                       exercise.title.toString(),
-                                      style: const TextStyle(fontSize: 20),
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onTertiaryContainer),
                                     )),
                                     // trailing: const Icon(Icons.more_horiz),
                                     // subtitle: Text(exercise.description.toString()),
@@ -967,6 +1016,9 @@ class ExPageContent extends State<ExScreen> {
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: <Widget>[
                                         IconButton(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onTertiaryContainer,
                                             onPressed: () => {
                                                   setState(() {
                                                     _db.deleteExercise(
@@ -975,18 +1027,30 @@ class ExPageContent extends State<ExScreen> {
                                                 },
                                             icon: const Icon(Icons.delete)),
                                         IconButton(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onTertiaryContainer,
                                             onPressed: () => {
                                                   showDialog(
                                                       context: context,
                                                       builder:
                                                           ((context) =>
                                                               AlertDialog(
+                                                                backgroundColor: Theme.of(
+                                                                        context)
+                                                                    .colorScheme
+                                                                    .tertiaryContainer,
                                                                 shape: const RoundedRectangleBorder(
                                                                     borderRadius:
                                                                         BorderRadius.all(
                                                                             Radius.circular(32.0))),
                                                                 title:
                                                                     TextField(
+                                                                  // style: TextStyle(
+                                                                  // color: Theme.of(
+                                                                  //         context)
+                                                                  //     .colorScheme
+                                                                  //     .onTertiaryContainer),
                                                                   controller: _controllerTitleUpdate
                                                                     ..text = exercise
                                                                         .title
