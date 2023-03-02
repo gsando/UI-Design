@@ -1,3 +1,5 @@
+// import 'dart:collection';
+
 import 'package:drift/drift.dart';
 import 'dart:io';
 
@@ -16,13 +18,29 @@ class Exercise extends Table {
   IntColumn get seconds => integer().withDefault(const Constant(0))();
 }
 
-@DriftDatabase(tables: [Exercise])
+class Plan extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  List<int> rand = <int>[]; //should create a growable list
+}
+
+@DriftDatabase(tables: [Exercise, Plan])
 class MyDatabase extends _$MyDatabase {
   MyDatabase() : super(_openConnection());
 
   // you should bump this number whenever you change or add a table definition.
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  // Future<List<ExerciseData>> getPlan(int id) async {
+  //   return await select(exercise)
+  //     ..where((tbl) => tbl.id.equals());
+  // }
+
+  // Future<PlanData> getPlan(int id) async{
+  //     return await (select(plan)..where((tbl) => tbl.id.equals(id)))
+  //       .getSingle();
+  // }
+
   //Gets the entire list of exercises
   Future<List<ExerciseData>> getExercises() async {
     return await select(exercise).get();
