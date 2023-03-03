@@ -5,10 +5,15 @@ This is a workout app being developed for UI Design.
 Drift does not support web developement!
 
 ***When in developement***
+
 Run 
-    flutter build windows
-    flutter run
-    *select 1, windows*
+
+
+flutter build windows
+
+flutter run
+
+*select 1, windows*
 
 
 File breakdown:
