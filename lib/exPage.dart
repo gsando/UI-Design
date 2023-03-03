@@ -211,8 +211,15 @@ class ExPageContent extends State<ExScreen> {
                 itemBuilder: (context, index) {
                   final exercise = exercises[index];
                   return AnimatedContainer(
+                    color: Colors.transparent,
                     duration: const Duration(milliseconds: 100),
                     child: InkWell(
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(12.0)),
+                      // highlightColor: Colors.transparent,
+                      // hoverColor: Theme.of(context).colorScheme.background,
+                      // focusColor: Colors.transparent,
+                      // onHover: (value) => ,
                       onTap: () {
                         showDialog(
                             context: context,
@@ -243,6 +250,9 @@ class ExPageContent extends State<ExScreen> {
                                 )));
                       },
                       child: Card(
+                        elevation: 10,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0)),
                         color: Theme.of(context).colorScheme.tertiaryContainer,
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -371,8 +381,6 @@ class ExPageContent extends State<ExScreen> {
           }
           return const Text('Santa is coming');
         });
-    //   ],
-    // );
   }
 
   void addExercise() {
