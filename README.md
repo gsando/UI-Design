@@ -14,8 +14,8 @@ Run
 File breakdown:
 
 *main.dart*
-    
-    This is what initiates the creation of the app, database, and establishes the theme/style.
+
+This is what initiates the creation of the app, database, and establishes the theme/style.
 
 *navigation.dart*
     NavBarHandler and _NavBarHandlerState have to do with the bottom navigation bar, essentially creates the widget and ensures it is always visible
