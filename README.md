@@ -8,11 +8,11 @@ Drift does not support web developement!
 
 Run 
 
-flutter build windows
-flutter run
-*select 1, windows*
+    flutter build windows
+    flutter run
+    select 1, windows*
 
-File breakdown:
+**File breakdown:**
 
 ***main.dart***
 
