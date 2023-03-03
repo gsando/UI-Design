@@ -14,10 +14,9 @@ class ExPageContent extends State<ExScreen> {
   //contains content for the exercises page (to enter)
   static const String route = '/';
 
-  // late MyDatabase _db;
+  final _db = MyDatabase(); //opens the database connection
 
-  final _db = MyDatabase();
-
+//Below are the controllers that have been assigned to TextFields, these are used to gather text/ make modifications
   final _controllerName = TextEditingController();
   final _controllerDes = TextEditingController();
   final _controllerMin = TextEditingController();
@@ -28,11 +27,10 @@ class ExPageContent extends State<ExScreen> {
 
   @override
   void initState() {
-    // Future forBuilder = _db.getExercises();
-    // _buildList();
     super.initState();
   }
 
+//This method is required in order to close and dispose of the controllers to prevent a data leak
   @override
   void dispose() {
     _db.close();
@@ -47,34 +45,33 @@ class ExPageContent extends State<ExScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // _db = MyDatabase();
+    // Scaffold is the typical structure used when designing a page
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
       appBar: AppBar(
+          //appBar refers to the banner or bar at the very top of the page
           centerTitle: false,
-          backgroundColor: Theme.of(context).colorScheme.secondary,
-          // actions: [
-          //   IconButton(
-          //     icon: const Icon(Icons.edit),
-          //     onPressed: () {
-          //       navigate(context, ProfileEdit.route);
-          //     },
-          //   )
-          // ],
+          backgroundColor:
+              Theme.of(context).colorScheme.secondary, //refers to the Bar color
           title: Text(
             'Excercises',
-            style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+            style: TextStyle(
+                color: Theme.of(context)
+                    .colorScheme
+                    .onSecondary), //used because onSecondary will always contrast secondary to ensure readability
           )),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
+              //Expanded is used here because of the flex feature, when paired with other expanded widgets, they can be given space that is relative to to the window
               flex: 1,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
+                    //The first textfield on the top left, allows the user to input text and easily clear using the attached controller, this controller allows us to retrieve the input later
                     width: 300,
                     child: TextField(
                       controller: _controllerName,
