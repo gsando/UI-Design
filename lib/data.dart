@@ -29,7 +29,7 @@ class MyDatabase extends _$MyDatabase {
 
   // you should bump this number whenever you change or add a table definition.
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 1;
 
   // Future<List<ExerciseData>> getPlan(int id) async {
   //   return await select(exercise)

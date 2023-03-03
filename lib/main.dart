@@ -7,8 +7,9 @@ void main() {
 }
 
 final db = MyDatabase();
-final _defaultLightColorScheme =
-    ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 71, 227, 255));
+final _defaultLightColorScheme = ColorScheme.fromSeed(
+    seedColor: const Color.fromARGB(255, 71, 227,
+        255)); //change the seed color to edit the app's color scheme
 
 final _defaultDarkColorScheme =
     _defaultLightColorScheme.copyWith(brightness: Brightness.dark);
