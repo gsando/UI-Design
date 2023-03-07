@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:workout_app/data.dart';
 import 'package:drift/drift.dart' as drift;
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 
 class ExScreen extends StatefulWidget {
   const ExScreen({Key? key}) : super(key: key);
@@ -163,7 +164,8 @@ class ExPageContent extends State<ExScreen> {
                               textStyle: const TextStyle(fontSize: 20)),
                           onPressed: () {
                             addExercise();
-                            setState(() {});
+                            // setState(() {});
+                            Phoenix.rebirth(context);
                           },
                           child: Text(
                             'Submit',

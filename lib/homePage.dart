@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+// import 'main.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:workout_app/main.dart';
 
 class Home extends StatefulWidget {
   //creates state for home page
@@ -64,17 +67,22 @@ class _HomeState extends State<Home> {
           style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
         ),
         backgroundColor: Theme.of(context).colorScheme.secondary,
-        // actions: [
-        //   IconButton(
-        //     icon: Icon(
-        //       Icons.dark_mode,
-        //       color: Theme.of(context).colorScheme.onSecondary,
-        //     ),
-        //     onPressed: () {
-        //       setState(() {});
-        //     },
-        //   )
-        // ],
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.dark_mode,
+              color: Theme.of(context).colorScheme.onSecondary,
+            ),
+            onPressed: () {
+              if (modeFlag) {
+                modeFlag = false;
+              } else {
+                modeFlag = true;
+              }
+              Phoenix.rebirth(context);
+            },
+          )
+        ],
       ),
       body: Center(
           // Center is a layout widget. It takes a single child and positions it

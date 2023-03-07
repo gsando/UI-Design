@@ -1,25 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:workout_app/data.dart';
 import 'navigation.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(Phoenix(child: const MyApp()));
 }
 
+const seedColor = Color.fromARGB(255, 117, 255, 158);
+
 final db = MyDatabase();
-final _defaultLightColorScheme = ColorScheme.fromSeed(
-    brightness: Brightness.light,
-    seedColor: const Color.fromARGB(255, 117, 255,
-        158)); //change the seed color to edit the app's color scheme
+bool modeFlag = false;
+final _defaulttColorScheme = ColorScheme.fromSeed(
+  brightness: Brightness.light,
+  seedColor: seedColor,
+);
 
 final _defaultDarkColorScheme =
-    _defaultLightColorScheme.copyWith(brightness: Brightness.dark);
+    ColorScheme.fromSeed(brightness: Brightness.dark, seedColor: seedColor);
 
-ThemeMode? _themeMode;
+// ColorScheme scheme = _defaulttColorScheme;
 
-class MyApp extends StatelessWidget {
+// ThemeMode? _themeMode;
+
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+  static const String route = '/';
 
+  @override
+  State<MyApp> createState() => _MyApp();
+}
+
+class _MyApp extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -28,7 +40,8 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           // primarySwatch: Colors.indigo,
           useMaterial3: true,
-          colorScheme: _defaultLightColorScheme,
+          colorScheme:
+              (modeFlag ? _defaultDarkColorScheme : _defaulttColorScheme),
         ),
         // routes: {
         //   // This route needs to be registered, Because
