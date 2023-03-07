@@ -88,9 +88,12 @@ class ExPageContent extends State<ExScreen> {
                   const SizedBox(
                     width: 20,
                   ),
-                  const Text(
+                  Text(
                     'Enter the estimated time to complete:   ',
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(
+                        fontSize: 16,
+                        color:
+                            Theme.of(context).colorScheme.onSecondaryContainer),
                   ),
                   const SizedBox(
                     width: 10,
@@ -155,12 +158,19 @@ class ExPageContent extends State<ExScreen> {
                         width: 100, //width of button
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.tertiary,
                               textStyle: const TextStyle(fontSize: 20)),
                           onPressed: () {
                             addExercise();
                             setState(() {});
                           },
-                          child: const Text('Submit'),
+                          child: Text(
+                            'Submit',
+                            style: TextStyle(
+                                color:
+                                    Theme.of(context).colorScheme.onTertiary),
+                          ),
                         )),
                   ],
                 )),

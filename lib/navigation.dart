@@ -291,7 +291,10 @@ class _AnimatedNavBarState extends State<AnimatedNavBar>
                               //     // const Color.fromARGB(244, 255, 45, 45),
                               Theme.of(context).colorScheme.secondary,
                           // Theme.of(context).bottomNavigationBarTheme.copyWith(backgroundColor: Theme.of(context).colorScheme.primary),
-                          icon: Icon(menuItem.iconData),
+                          icon: Icon(
+                            menuItem.iconData,
+                            // color: Theme.of(context).colorScheme.onSecondary,
+                          ),
                           label: menuItem.text,
                         ))
                     .toList(),

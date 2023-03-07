@@ -88,7 +88,9 @@ class _HomeState extends State<Home> {
                 Expanded(
                     child: Text(
                   timeString,
-                  style: const TextStyle(fontSize: 60),
+                  style: TextStyle(
+                      fontSize: 60,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer),
                   textAlign: TextAlign.center,
                 ))
               ],
