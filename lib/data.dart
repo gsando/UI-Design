@@ -19,8 +19,9 @@ class Exercise extends Table {
 }
 
 class Plan extends Table {
+  //drift does not recognize List as a datatype, so it has no column >:(
   IntColumn get id => integer().autoIncrement()();
-  List<int> rand = <int>[]; //should create a growable list
+  List<Exercise> get rand => <Exercise>[]; //should create a growable list
 }
 
 @DriftDatabase(tables: [Exercise, Plan])
@@ -36,9 +37,14 @@ class MyDatabase extends _$MyDatabase {
   //     ..where((tbl) => tbl.id.equals());
   // }
 
-  // Future<PlanData> getPlan(int id) async{
-  //     return await (select(plan)..where((tbl) => tbl.id.equals(id)))
-  //       .getSingle();
+  // void addToPlan(Exercise exercise, int planId) async {
+  //   Plan randHold = (select(plan)..where((tbl) => tbl.id.equals(planId)))
+  //       .getSingle() as Plan;
+  //   List<Exercise> holder = randHold.rand;
+  //   holder.add(exercise);
+  //   final entity = PlanCompanion(id: Value(planId));
+
+  //   // update(plan).replace(randHold);
   // }
 
   //Gets the entire list of exercises

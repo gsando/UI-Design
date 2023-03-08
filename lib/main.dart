@@ -7,7 +7,8 @@ void main() {
   runApp(Phoenix(child: const MyApp()));
 }
 
-const seedColor = Color.fromARGB(255, 117, 255, 158);
+const seedColor = Color.fromARGB(
+    255, 117, 255, 158); //change this color to change the app's color scheme
 
 final db = MyDatabase();
 bool modeFlag = false;
@@ -18,10 +19,6 @@ final _defaulttColorScheme = ColorScheme.fromSeed(
 
 final _defaultDarkColorScheme =
     ColorScheme.fromSeed(brightness: Brightness.dark, seedColor: seedColor);
-
-// ColorScheme scheme = _defaulttColorScheme;
-
-// ThemeMode? _themeMode;
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -38,7 +35,6 @@ class _MyApp extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         title: 'Wellness App',
         theme: ThemeData(
-          // primarySwatch: Colors.indigo,
           useMaterial3: true,
           colorScheme:
               (modeFlag ? _defaultDarkColorScheme : _defaulttColorScheme),
