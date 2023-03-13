@@ -7,8 +7,10 @@ void main() {
   runApp(Phoenix(child: const MyApp()));
 }
 
+// final _db = MyDatabase();
+
 const seedColor = Color.fromARGB(
-    255, 117, 255, 158); //change this color to change the app's color scheme
+    255, 171, 255, 241); //change this color to change the app's color scheme
 
 final db = MyDatabase();
 bool modeFlag = false;

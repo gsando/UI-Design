@@ -63,7 +63,7 @@ This holds the dependencies, development dependencies, and flags as it pertains 
 
 **What is colorScheme?**
 
-In main.dart, there is a colorScheme created "from Seed", which refers to the process of choosing a single color, and the class ColorScheme creates a color pallete that can be identified largely by "primary", "secondary", and "tertiary". There are sublevels within these categories, such as "primaryContainer" which would refer to a container (widget) that has been placed on the "primary" color. Throughout the classes containing the pages' content, you will see references to *Theme.of(context).colorScheme.primary*, which essentially says that the current class being built will use the existing colorScheme from the parent, and it will be the primary color. To change the color pallete, all you have to do it change the seed color in main.dart and rebuild the app.
+In main.dart, there is a colorScheme created "from Seed", which refers to the process of choosing a single color and the class ColorScheme creates a color pallete that can be identified largely by "primary", "secondary", and "tertiary". There are sublevels within these categories, such as "primaryContainer" which would refer to a container (widget) that has been placed on the "primary" color. Throughout the classes containing the pages' content, you will see references to *Theme.of(context).colorScheme.primary*, which essentially says that the current class being built will use the existing colorScheme from the parent, and it will be the primary color. To change the color pallete, all you have to do it change the seed color in main.dart and rebuild the app.
 
 
 

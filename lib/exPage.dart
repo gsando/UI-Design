@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:workout_app/data.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+// import 'main.dart';
 
 class ExScreen extends StatefulWidget {
   const ExScreen({Key? key}) : super(key: key);
@@ -239,9 +240,20 @@ class ExPageContent extends State<ExScreen> {
                                   shape: const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(32.0))),
-                                  title: Text(exercise.title.toString()),
-                                  content:
-                                      Text(exercise.description.toString()),
+                                  title: Text(
+                                    exercise.title.toString(),
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onTertiaryContainer),
+                                  ),
+                                  content: Text(
+                                    exercise.description.toString(),
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onTertiaryContainer),
+                                  ),
                                   actions: <Widget>[
                                     TextButton(
                                         onPressed: () => {
@@ -415,12 +427,6 @@ class ExPageContent extends State<ExScreen> {
       id: drift.Value(id),
       title: drift.Value(_controllerTitleUpdate.text),
       description: drift.Value(_controllerDesUpdate.text),
-      // minutes: drift.Value(int.tryParse(_controllerMin.text) == null
-      //     ? 0
-      //     : int.parse(_controllerMin.text)),
-      // seconds: drift.Value(int.tryParse(_controllerSec.text) == null
-      //     ? 0
-      //     : int.parse(_controllerSec.text)));
     );
 
     _db.updateEx(entity);

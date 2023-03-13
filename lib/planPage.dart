@@ -35,11 +35,13 @@ class _PlanListState extends State<PlanList> {
         ),
         backgroundColor: Theme.of(context).colorScheme.secondary,
       ),
-      body: const Center(
+      body: Center(
         child: Text(
           'Second page ;)',
-          selectionColor: Color.fromARGB(0, 231, 140, 20),
-          style: TextStyle(fontSize: 40),
+          selectionColor: const Color.fromARGB(0, 231, 140, 20),
+          style: TextStyle(
+              fontSize: 40,
+              color: Theme.of(context).colorScheme.onSecondaryContainer),
         ),
       ),
     );
