@@ -2,9 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:workout_app/data.dart';
 import 'navigation.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:provider/provider.dart';
+
+// void main() {
+//   runApp(Phoenix(child: const MyApp()));
+// }
+
+final _db = MyDatabase(); //opens the database connection
 
 void main() {
-  runApp(Phoenix(child: const MyApp()));
+  runApp(
+    Provider<MyDatabase>(
+      create: (context) => MyDatabase(),
+      child: Phoenix(child: const MyApp()),
+      dispose: (context, _db) => _db.close(),
+    ),
+  );
 }
 
 // final _db = MyDatabase();

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:workout_app/data.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter_phoenix/flutter_phoenix.dart';
-// import 'main.dart';
+import 'main.dart';
 
 class ExScreen extends StatefulWidget {
   const ExScreen({Key? key}) : super(key: key);
@@ -16,7 +17,7 @@ class ExPageContent extends State<ExScreen> {
   //contains content for the exercises page (to enter)
   static const String route = '/';
 
-  final _db = MyDatabase(); //opens the database connection
+  // final _db = MyDatabase(); //opens the database connection
 
 //Below are the controllers that have been assigned to TextFields, these are used to gather text/ make modifications
   final _controllerName = TextEditingController();
@@ -35,7 +36,7 @@ class ExPageContent extends State<ExScreen> {
 //This method is required in order to close and dispose of the controllers to prevent a data leak
   @override
   void dispose() {
-    _db.close();
+    // _db.close();
     _controllerName.dispose();
     _controllerDes.dispose();
     _controllerMin.dispose();
@@ -192,7 +193,7 @@ class ExPageContent extends State<ExScreen> {
 
   Widget _buildGrid() {
     return FutureBuilder<List<ExerciseData>>(
-        future: _db.getExercises(),
+        future: Provider.of<MyDatabase>(context, listen: false).getExercises(),
         builder: (context, snapshot) {
           final List<ExerciseData>? exercises = snapshot.data;
 
@@ -259,7 +260,10 @@ class ExPageContent extends State<ExScreen> {
                                         onPressed: () => {
                                               // _db.deleteExercise(exercise.id),
                                               setState(() {
-                                                _db.deleteExercise(exercise.id);
+                                                Provider.of<MyDatabase>(context,
+                                                        listen: false)
+                                                    .deleteExercise(
+                                                        exercise.id);
                                               }),
                                               Navigator.pop(context)
                                             },
@@ -305,8 +309,11 @@ class ExPageContent extends State<ExScreen> {
                                                 .onTertiaryContainer,
                                             onPressed: () => {
                                                   setState(() {
-                                                    _db.deleteExercise(
-                                                        exercise.id);
+                                                    Provider.of<MyDatabase>(
+                                                            context,
+                                                            listen: false)
+                                                        .deleteExercise(
+                                                            exercise.id);
                                                   }),
                                                 },
                                             icon: const Icon(Icons.delete)),
@@ -414,7 +421,7 @@ class ExPageContent extends State<ExScreen> {
         seconds: drift.Value(int.tryParse(_controllerSec.text) == null
             ? 0
             : int.parse(_controllerSec.text)));
-    _db.insertExercise(entity);
+    Provider.of<MyDatabase>(context, listen: false).insertExercise(entity);
 
     _controllerName.clear();
     _controllerDes.clear();
@@ -429,6 +436,6 @@ class ExPageContent extends State<ExScreen> {
       description: drift.Value(_controllerDesUpdate.text),
     );
 
-    _db.updateEx(entity);
+    Provider.of<MyDatabase>(context, listen: false).updateEx(entity);
   }
 }

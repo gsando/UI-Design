@@ -20,8 +20,12 @@ class Exercise extends Table {
 
 class Plan extends Table {
   //drift does not recognize List as a datatype, so it has no column >:(
-  IntColumn get id => integer().autoIncrement()();
-  List<Exercise> get rand => <Exercise>[]; //should create a growable list
+  IntColumn get id => integer().autoIncrement()(); //nodeID
+  IntColumn get planID => integer()();
+  TextColumn get title => text().withLength(min: 1, max: 100)();
+  TextColumn get description => text().named('body')();
+  IntColumn get minutes => integer().withDefault(const Constant(0))();
+  IntColumn get seconds => integer().withDefault(const Constant(0))();
 }
 
 @DriftDatabase(tables: [Exercise, Plan])
