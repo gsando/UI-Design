@@ -265,7 +265,8 @@ class ExPageContent extends State<ExScreen> {
                                                     .deleteExercise(
                                                         exercise.id);
                                               }),
-                                              Navigator.pop(context)
+                                              Navigator.pop(context),
+                                              Phoenix.rebirth(context),
                                             },
                                         child: const Text("Delete")),
                                     TextButton(
@@ -315,6 +316,7 @@ class ExPageContent extends State<ExScreen> {
                                                         .deleteExercise(
                                                             exercise.id);
                                                   }),
+                                                  Phoenix.rebirth(context),
                                                 },
                                             icon: const Icon(Icons.delete)),
                                         IconButton(
@@ -392,7 +394,7 @@ class ExPageContent extends State<ExScreen> {
                                                                               {
                                                                                 updateExercise(exercise.id),
                                                                                 Navigator.pop(context),
-                                                                                setState(() {})
+                                                                                Phoenix.rebirth(context),
                                                                               },
                                                                       child: const Text(
                                                                           "Update")),
