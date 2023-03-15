@@ -39,7 +39,25 @@ class _PlanListState extends State<PlanList> {
         backgroundColor: Theme.of(context).colorScheme.secondary,
       ),
       body: Center(
-        child: _buildPlanGrid(),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+                flex: 1,
+                child: TextButton(
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: ((context) => const AlertDialog(
+                              title: Text('Test'),
+                              content: Text('Test content'),
+                            )));
+                  },
+                  child: const Text("Button"),
+                )),
+            const Expanded(flex: 2, child: Placeholder())
+          ],
+        ),
       ),
     );
   }

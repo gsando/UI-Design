@@ -21,7 +21,8 @@ class Exercise extends Table {
 class Plan extends Table {
   //drift does not recognize List as a datatype, so it has no column >:(
   IntColumn get id => integer().autoIncrement()(); //nodeID
-  IntColumn get planID => integer()();
+  IntColumn get planID =>
+      integer()(); //a single plan will have an ID, exercises belonging to that plan will share planID
   TextColumn get title => text().withLength(min: 1, max: 100)();
   TextColumn get description => text().named('body')();
   IntColumn get minutes => integer().withDefault(const Constant(0))();
