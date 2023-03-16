@@ -1,5 +1,7 @@
 // import 'dart:collection';
 
+import 'dart:ffi';
+
 import 'package:drift/drift.dart';
 import 'dart:io';
 
@@ -16,6 +18,8 @@ class Exercise extends Table {
   TextColumn get description => text().named('body')();
   IntColumn get minutes => integer().withDefault(const Constant(0))();
   IntColumn get seconds => integer().withDefault(const Constant(0))();
+  BoolColumn get selected => boolean().nullable()();
+  // IntColumn get intFlag => integer().withDefault(const Constant(0))();
 }
 
 class PlanEx extends Table {
@@ -40,7 +44,7 @@ class MyDatabase extends _$MyDatabase {
 
   // you should bump this number whenever you change or add a table definition.
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration {
@@ -49,9 +53,10 @@ class MyDatabase extends _$MyDatabase {
         await m.createAll();
       },
       onUpgrade: (Migrator m, int from, int to) async {
-        if (from < 2) {
+        if (from < 3) {
           // we added the dueDate property in the change from version 1 to
           // version 2
+          await m.addColumn(exercise, exercise.selected);
           await m.createTable(planName);
           await m.createTable(planEx);
         }
@@ -98,6 +103,22 @@ class MyDatabase extends _$MyDatabase {
 
   Future<int> deleteExercise(int id) async {
     return await (delete(exercise)..where((tbl) => tbl.id.equals(id))).go();
+  }
+
+  Future makeExTrue(int id) async {
+    return (update(exercise)..where((tbl) => tbl.id.equals(id)))
+        // ..where((tbl) => tbl.selected.equals(false))
+        .write(const ExerciseCompanion(
+      selected: Value(true),
+    ));
+  }
+
+  Future makeExFalse(int id) async {
+    return (update(exercise)..where((tbl) => tbl.id.equals(id)))
+        // ..where((tbl) => tbl.selected.equals(false))
+        .write(const ExerciseCompanion(
+      selected: Value(false),
+    ));
   }
 }
 

@@ -6,6 +6,7 @@ import 'package:workout_app/navigation.dart';
 import 'package:provider/provider.dart';
 
 bool submitFlag = false;
+bool holder = false;
 
 class PlanList extends StatefulWidget {
   const PlanList({Key? key}) : super(key: key);
@@ -204,18 +205,38 @@ class PlanListState extends State<PlanList> {
                 // shrinkWrap: true,
                 itemCount: exercises.length,
                 itemBuilder: (context, index) {
+                  // holder = false;
                   final exercise = exercises[index];
+                  holder = exercise.selected ?? false;
                   return AnimatedContainer(
                     color: Colors.transparent,
                     duration: const Duration(milliseconds: 100),
                     child: InkWell(
+                      onTap: () {
+                        // print("here");
+                        if (exercise.selected != null &&
+                            exercise.selected == true) {
+                          Provider.of<MyDatabase>(context, listen: false)
+                              .makeExFalse(exercise.id);
+                          holder = false;
+                          // print("here");
+                        } else if (exercise.selected != null) {
+                          Provider.of<MyDatabase>(context, listen: false)
+                              .makeExTrue(exercise.id);
+                          holder = true;
+                          // print("here");
+                        }
+                        Phoenix.rebirth(context);
+                      },
                       borderRadius:
                           const BorderRadius.all(Radius.circular(12.0)),
                       child: Card(
                         elevation: 10,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0)),
-                        color: Theme.of(context).colorScheme.tertiaryContainer,
+                        color: (holder //no problem here
+                            ? Theme.of(context).colorScheme.tertiary
+                            : Theme.of(context).colorScheme.tertiaryContainer),
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
@@ -226,9 +247,13 @@ class PlanListState extends State<PlanList> {
                                   exercise.title.toString(),
                                   style: TextStyle(
                                       fontSize: 20,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onTertiaryContainer),
+                                      color: (holder
+                                          ? Theme.of(context)
+                                              .colorScheme
+                                              .onTertiary
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .onTertiaryContainer)),
                                 )),
                                 // trailing: const Icon(Icons.more_horiz),
                                 // subtitle: Text(exercise.description.toString()),

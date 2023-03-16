@@ -48,9 +48,21 @@ class $ExerciseTable extends Exercise
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(0));
+  static const VerificationMeta _selectedMeta =
+      const VerificationMeta('selected');
+  @override
+  late final GeneratedColumn<bool> selected =
+      GeneratedColumn<bool>('selected', aliasedName, true,
+          type: DriftSqlType.bool,
+          requiredDuringInsert: false,
+          defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
+            SqlDialect.sqlite: 'CHECK ("selected" IN (0, 1))',
+            SqlDialect.mysql: '',
+            SqlDialect.postgres: '',
+          }));
   @override
   List<GeneratedColumn> get $columns =>
-      [id, title, description, minutes, seconds];
+      [id, title, description, minutes, seconds, selected];
   @override
   String get aliasedName => _alias ?? 'exercise';
   @override
@@ -83,6 +95,10 @@ class $ExerciseTable extends Exercise
       context.handle(_secondsMeta,
           seconds.isAcceptableOrUnknown(data['seconds']!, _secondsMeta));
     }
+    if (data.containsKey('selected')) {
+      context.handle(_selectedMeta,
+          selected.isAcceptableOrUnknown(data['selected']!, _selectedMeta));
+    }
     return context;
   }
 
@@ -102,6 +118,8 @@ class $ExerciseTable extends Exercise
           .read(DriftSqlType.int, data['${effectivePrefix}minutes'])!,
       seconds: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}seconds'])!,
+      selected: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}selected']),
     );
   }
 
@@ -117,12 +135,14 @@ class ExerciseData extends DataClass implements Insertable<ExerciseData> {
   final String description;
   final int minutes;
   final int seconds;
+  final bool? selected;
   const ExerciseData(
       {required this.id,
       required this.title,
       required this.description,
       required this.minutes,
-      required this.seconds});
+      required this.seconds,
+      this.selected});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -131,6 +151,9 @@ class ExerciseData extends DataClass implements Insertable<ExerciseData> {
     map['body'] = Variable<String>(description);
     map['minutes'] = Variable<int>(minutes);
     map['seconds'] = Variable<int>(seconds);
+    if (!nullToAbsent || selected != null) {
+      map['selected'] = Variable<bool>(selected);
+    }
     return map;
   }
 
@@ -141,6 +164,9 @@ class ExerciseData extends DataClass implements Insertable<ExerciseData> {
       description: Value(description),
       minutes: Value(minutes),
       seconds: Value(seconds),
+      selected: selected == null && nullToAbsent
+          ? const Value.absent()
+          : Value(selected),
     );
   }
 
@@ -153,6 +179,7 @@ class ExerciseData extends DataClass implements Insertable<ExerciseData> {
       description: serializer.fromJson<String>(json['description']),
       minutes: serializer.fromJson<int>(json['minutes']),
       seconds: serializer.fromJson<int>(json['seconds']),
+      selected: serializer.fromJson<bool?>(json['selected']),
     );
   }
   @override
@@ -164,6 +191,7 @@ class ExerciseData extends DataClass implements Insertable<ExerciseData> {
       'description': serializer.toJson<String>(description),
       'minutes': serializer.toJson<int>(minutes),
       'seconds': serializer.toJson<int>(seconds),
+      'selected': serializer.toJson<bool?>(selected),
     };
   }
 
@@ -172,13 +200,15 @@ class ExerciseData extends DataClass implements Insertable<ExerciseData> {
           String? title,
           String? description,
           int? minutes,
-          int? seconds}) =>
+          int? seconds,
+          Value<bool?> selected = const Value.absent()}) =>
       ExerciseData(
         id: id ?? this.id,
         title: title ?? this.title,
         description: description ?? this.description,
         minutes: minutes ?? this.minutes,
         seconds: seconds ?? this.seconds,
+        selected: selected.present ? selected.value : this.selected,
       );
   @override
   String toString() {
@@ -187,13 +217,15 @@ class ExerciseData extends DataClass implements Insertable<ExerciseData> {
           ..write('title: $title, ')
           ..write('description: $description, ')
           ..write('minutes: $minutes, ')
-          ..write('seconds: $seconds')
+          ..write('seconds: $seconds, ')
+          ..write('selected: $selected')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, title, description, minutes, seconds);
+  int get hashCode =>
+      Object.hash(id, title, description, minutes, seconds, selected);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -202,7 +234,8 @@ class ExerciseData extends DataClass implements Insertable<ExerciseData> {
           other.title == this.title &&
           other.description == this.description &&
           other.minutes == this.minutes &&
-          other.seconds == this.seconds);
+          other.seconds == this.seconds &&
+          other.selected == this.selected);
 }
 
 class ExerciseCompanion extends UpdateCompanion<ExerciseData> {
@@ -211,12 +244,14 @@ class ExerciseCompanion extends UpdateCompanion<ExerciseData> {
   final Value<String> description;
   final Value<int> minutes;
   final Value<int> seconds;
+  final Value<bool?> selected;
   const ExerciseCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
     this.description = const Value.absent(),
     this.minutes = const Value.absent(),
     this.seconds = const Value.absent(),
+    this.selected = const Value.absent(),
   });
   ExerciseCompanion.insert({
     this.id = const Value.absent(),
@@ -224,6 +259,7 @@ class ExerciseCompanion extends UpdateCompanion<ExerciseData> {
     required String description,
     this.minutes = const Value.absent(),
     this.seconds = const Value.absent(),
+    this.selected = const Value.absent(),
   })  : title = Value(title),
         description = Value(description);
   static Insertable<ExerciseData> custom({
@@ -232,6 +268,7 @@ class ExerciseCompanion extends UpdateCompanion<ExerciseData> {
     Expression<String>? description,
     Expression<int>? minutes,
     Expression<int>? seconds,
+    Expression<bool>? selected,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -239,6 +276,7 @@ class ExerciseCompanion extends UpdateCompanion<ExerciseData> {
       if (description != null) 'body': description,
       if (minutes != null) 'minutes': minutes,
       if (seconds != null) 'seconds': seconds,
+      if (selected != null) 'selected': selected,
     });
   }
 
@@ -247,13 +285,15 @@ class ExerciseCompanion extends UpdateCompanion<ExerciseData> {
       Value<String>? title,
       Value<String>? description,
       Value<int>? minutes,
-      Value<int>? seconds}) {
+      Value<int>? seconds,
+      Value<bool?>? selected}) {
     return ExerciseCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
       description: description ?? this.description,
       minutes: minutes ?? this.minutes,
       seconds: seconds ?? this.seconds,
+      selected: selected ?? this.selected,
     );
   }
 
@@ -275,6 +315,9 @@ class ExerciseCompanion extends UpdateCompanion<ExerciseData> {
     if (seconds.present) {
       map['seconds'] = Variable<int>(seconds.value);
     }
+    if (selected.present) {
+      map['selected'] = Variable<bool>(selected.value);
+    }
     return map;
   }
 
@@ -285,7 +328,8 @@ class ExerciseCompanion extends UpdateCompanion<ExerciseData> {
           ..write('title: $title, ')
           ..write('description: $description, ')
           ..write('minutes: $minutes, ')
-          ..write('seconds: $seconds')
+          ..write('seconds: $seconds, ')
+          ..write('selected: $selected')
           ..write(')'))
         .toString();
   }

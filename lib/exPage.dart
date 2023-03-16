@@ -80,7 +80,8 @@ class ExPageContent extends State<ExScreen> {
                       controller: _controllerName,
                       decoration: InputDecoration(
                           // fillColor: Colors.white,
-                          border: const OutlineInputBorder(),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0)),
                           hintText: 'Enter the exercise name',
                           suffixIcon: IconButton(
                             onPressed: _controllerName.clear,
@@ -109,8 +110,9 @@ class ExPageContent extends State<ExScreen> {
                       ],
                       // keyboardType: TextInputType.number,
                       controller: _controllerMin,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.0)),
                         hintText: 'Minutes',
                       ),
                     ),
@@ -125,8 +127,9 @@ class ExPageContent extends State<ExScreen> {
                         FilteringTextInputFormatter.digitsOnly,
                       ],
                       controller: _controllerSec,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.0)),
                         hintText: 'Seconds',
                       ),
                     ),
@@ -145,7 +148,8 @@ class ExPageContent extends State<ExScreen> {
                       child: TextField(
                         controller: _controllerDes,
                         decoration: InputDecoration(
-                            border: const OutlineInputBorder(),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15.0)),
                             hintText: 'Enter the description of the exercise',
                             suffixIcon: IconButton(
                               onPressed: _controllerDes.clear,
@@ -415,14 +419,16 @@ class ExPageContent extends State<ExScreen> {
 
   void addExercise() {
     final entity = ExerciseCompanion(
-        title: drift.Value(_controllerName.text),
-        description: drift.Value(_controllerDes.text),
-        minutes: drift.Value(int.tryParse(_controllerMin.text) == null
-            ? 0
-            : int.parse(_controllerMin.text)),
-        seconds: drift.Value(int.tryParse(_controllerSec.text) == null
-            ? 0
-            : int.parse(_controllerSec.text)));
+      title: drift.Value(_controllerName.text),
+      description: drift.Value(_controllerDes.text),
+      minutes: drift.Value(int.tryParse(_controllerMin.text) == null
+          ? 0
+          : int.parse(_controllerMin.text)),
+      seconds: drift.Value(int.tryParse(_controllerSec.text) == null
+          ? 0
+          : int.parse(_controllerSec.text)),
+      selected: const drift.Value(false),
+    );
     Provider.of<MyDatabase>(context, listen: false).insertExercise(entity);
 
     _controllerName.clear();
