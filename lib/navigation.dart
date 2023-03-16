@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+// import 'package:workout_app/newPlanPage.dart';
 import 'homePage.dart';
 import 'planPage.dart';
 import 'exPage.dart';
@@ -8,6 +9,7 @@ final homeKey = GlobalKey<
     NavigatorState>(); //These are global variables to be used for Navigator (the method that helps link different pages)
 final planKey = GlobalKey<NavigatorState>();
 final exKey = GlobalKey<NavigatorState>();
+// final newPlayKey = GlobalKey<NavigatorState>();
 final NavbarNotifier _navbarNotifier = NavbarNotifier();
 
 class NavBarHandler extends StatefulWidget {
@@ -21,7 +23,7 @@ class NavBarHandler extends StatefulWidget {
 class _NavBarHandlerState extends State<NavBarHandler>
     with SingleTickerProviderStateMixin {
   //this method is what handles the bottomNavBar: showing items, transitions
-  final _buildBody = const <Widget>[HomePage(), PlanPage(), ExPage()];
+  final _buildBody = const <Widget>[HomePage(), PlanPageNav(), ExPage()];
 
   late List<BottomNavigationBarItem> _bottomList = <BottomNavigationBarItem>[];
 
@@ -327,8 +329,8 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class PlanPage extends StatelessWidget {
-  const PlanPage({Key? key}) : super(key: key);
+class PlanPageNav extends StatelessWidget {
+  const PlanPageNav({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

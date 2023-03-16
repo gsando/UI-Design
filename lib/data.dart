@@ -18,7 +18,7 @@ class Exercise extends Table {
   IntColumn get seconds => integer().withDefault(const Constant(0))();
 }
 
-class Plan extends Table {
+class PlanEx extends Table {
   //drift does not recognize List as a datatype, so it has no column >:(
   IntColumn get id => integer().autoIncrement()(); //nodeID
   IntColumn get planID =>
@@ -29,28 +29,54 @@ class Plan extends Table {
   IntColumn get seconds => integer().withDefault(const Constant(0))();
 }
 
-@DriftDatabase(tables: [Exercise, Plan])
+class PlanName extends Table {
+  IntColumn get planID => integer().autoIncrement()();
+  TextColumn get titlePlan => text().withLength(min: 1, max: 100)();
+}
+
+@DriftDatabase(tables: [Exercise, PlanEx, PlanName])
 class MyDatabase extends _$MyDatabase {
   MyDatabase() : super(_openConnection());
 
   // you should bump this number whenever you change or add a table definition.
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
-  // Future<List<ExerciseData>> getPlan(int id) async {
-  //   return await select(exercise)
-  //     ..where((tbl) => tbl.id.equals());
-  // }
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onCreate: (Migrator m) async {
+        await m.createAll();
+      },
+      onUpgrade: (Migrator m, int from, int to) async {
+        if (from < 2) {
+          // we added the dueDate property in the change from version 1 to
+          // version 2
+          await m.createTable(planName);
+          await m.createTable(planEx);
+        }
+        // if (from < 3) {
+        //   // we added the priority property in the change from version 1 or 2
+        //   // to version 3
+        //   await m.addColumn(todos, todos.priority);
+        // }
+      },
+    );
+  }
 
-  // void addToPlan(Exercise exercise, int planId) async {
-  //   Plan randHold = (select(plan)..where((tbl) => tbl.id.equals(planId)))
-  //       .getSingle() as Plan;
-  //   List<Exercise> holder = randHold.rand;
-  //   holder.add(exercise);
-  //   final entity = PlanCompanion(id: Value(planId));
+  Future<List<PlanExData>> getPlanEx(int planID) async {
+    return await (select(planEx)..where((tbl) => tbl.planID.equals(planID)))
+        .get();
+  }
 
-  //   // update(plan).replace(randHold);
-  // }
+  Future<PlanNameData> getPlanName(int planID) async {
+    return await (select(planName)..where((tbl) => tbl.planID.equals(planID)))
+        .getSingle();
+  }
+
+  Future<List<PlanNameData>> getAllPlanNames() async {
+    return await select(planName).get();
+  }
 
   //Gets the entire list of exercises
   Future<List<ExerciseData>> getExercises() async {
