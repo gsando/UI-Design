@@ -3,7 +3,9 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 // import  'main.dart';
 import 'package:workout_app/data.dart';
 import 'package:workout_app/navigation.dart';
+import 'package:drift/drift.dart' as drift;
 import 'package:provider/provider.dart';
+import 'package:workout_app/selectedPlanPage.dart';
 
 bool submitFlag = false;
 bool holder = false;
@@ -148,10 +150,41 @@ class PlanListState extends State<PlanList> {
   }
 
   Widget floatingButton() {
+    // print("Here is the numOfPlans $numOfPlans");
     return Padding(
       padding: const EdgeInsets.only(bottom: 50),
       child: FloatingActionButton.extended(
-        onPressed: () => {},
+        onPressed: () async {
+          Provider.of<MyDatabase>(context, listen: false).insertPlanName(
+              PlanNameCompanion(
+                  titlePlan: drift.Value(_controllerPlanName.text)));
+
+          PlanNameData lastPlan =
+              await Provider.of<MyDatabase>(context, listen: false)
+                  .getLastPlanID();
+
+          int numOfPlans = lastPlan.planID;
+
+          List<ExerciseData> exercises =
+              await Provider.of<MyDatabase>(context, listen: false)
+                  .getExercises();
+
+          if (exercises.isNotEmpty) {
+            for (int i = 0; i < exercises.length; i++) {
+              holder = exercises[i].selected ?? false;
+              // randHold = exercises[i].id;
+              if (holder) {
+                // print(
+                //     "here, holder is true, value of i is $i and id is $randHold");
+                addPlanEx(exercises[i], numOfPlans);
+                Provider.of<MyDatabase>(context, listen: false)
+                    .makeExFalse(exercises[i].id);
+              }
+            }
+          }
+          _controllerPlanName.clear();
+          Phoenix.rebirth(context);
+        },
         label: Text(
           "Submit plan",
           style: TextStyle(
@@ -268,6 +301,15 @@ class PlanListState extends State<PlanList> {
         });
   }
 
+  void addPlanEx(ExerciseData exercise, int idofPlan) {
+    final entity = PlanExCompanion(
+      planID: drift.Value(idofPlan),
+      title: drift.Value(exercise.title),
+      description: drift.Value(exercise.description),
+    );
+    Provider.of<MyDatabase>(context, listen: false).insertPlanEx(entity);
+  }
+
   Widget getExistingPlans() {
     return Center(
       child: FutureBuilder<List<PlanNameData>>(
@@ -294,16 +336,102 @@ class PlanListState extends State<PlanList> {
                   itemCount: names.length,
                   itemBuilder: (context, index) {
                     final name = names[index];
+                    final String nameString = name.titlePlan;
                     return InkWell(
                       borderRadius:
                           const BorderRadius.all(Radius.circular(12.0)),
-                      onTap: () {},
+                      onTap: () async {
+                        List<PlanExData> plan = await Provider.of<MyDatabase>(
+                                context,
+                                listen: false)
+                            .getPlanEx(name.planID);
+                        // ignore: use_build_context_synchronously
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => OpenPlan(
+                                      planData: plan,
+                                      planTitle: name.titlePlan,
+                                    )));
+                      },
                       child: Card(
                         elevation: 10,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0)),
-                        color: Theme.of(context).colorScheme.tertiaryContainer,
-                        child: Text(name.titlePlan.toString()),
+                        color: (holder //no problem here
+                            ? Theme.of(context).colorScheme.tertiary
+                            : Theme.of(context).colorScheme.tertiaryContainer),
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              ListTile(
+                                // leading: Icon(Icons.album),
+                                title: Center(
+                                    child: Text(
+                                  name.titlePlan.toString(),
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      color: (holder
+                                          ? Theme.of(context)
+                                              .colorScheme
+                                              .onTertiary
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .onTertiaryContainer)),
+                                )),
+                                // subtitle: Text(name.planID.toString()),
+                                trailing: IconButton(
+                                    onPressed: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                                backgroundColor:
+                                                    Theme.of(context)
+                                                        .colorScheme
+                                                        .tertiaryContainer,
+                                                shape:
+                                                    const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    32.0))),
+                                                title: Text("Woah!",
+                                                    style: TextStyle(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .onTertiaryContainer)),
+                                                content: Text(
+                                                    "Are you sure you want to delete \"$nameString\"?"),
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                      onPressed: () => {
+                                                            setState(() {
+                                                              Provider.of<MyDatabase>(
+                                                                      context,
+                                                                      listen:
+                                                                          false)
+                                                                  .deletePlan(name
+                                                                      .planID);
+                                                            }),
+                                                            Phoenix.rebirth(
+                                                                context),
+                                                          },
+                                                      child:
+                                                          const Text("Delete")),
+                                                  TextButton(
+                                                      onPressed: () =>
+                                                          Navigator.pop(
+                                                              context),
+                                                      child:
+                                                          const Text("Cancel"))
+                                                ],
+                                              ));
+                                      // Phoenix.rebirth(context);
+                                    },
+                                    icon: const Icon(Icons.delete)),
+                                // subtitle: Text(exercise.description.toString()),
+                              )
+                            ]),
                       ),
                     );
                   });

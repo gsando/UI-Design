@@ -69,6 +69,34 @@ class MyDatabase extends _$MyDatabase {
     );
   }
 
+  // final numberOfPlans = planName.planID.count();
+
+  // Future<int?> countNumPlans() async {
+  //   var countPlans = planName.planID.count();
+
+  //   final query = selectOnly(planName)..addColumns([countPlans]);
+  //   var result = await query.map((row) => row.read(countPlans)).getSingle();
+  //   return result;
+  // }
+
+  Future<PlanNameData> getLastPlanID() {
+    return (select(planName)
+          ..orderBy([
+            (tbl) => OrderingTerm(
+                expression: planName.planID, mode: OrderingMode.desc)
+          ])
+          ..limit(1))
+        .getSingle();
+  }
+
+  Future<int> insertPlanEx(PlanExCompanion entity) async {
+    return await into(planEx).insert(entity);
+  }
+
+  Future<int> insertPlanName(PlanNameCompanion entity) async {
+    return await into(planName).insert(entity);
+  }
+
   Future<List<PlanExData>> getPlanEx(int planID) async {
     return await (select(planEx)..where((tbl) => tbl.planID.equals(planID)))
         .get();
@@ -103,6 +131,17 @@ class MyDatabase extends _$MyDatabase {
 
   Future<int> deleteExercise(int id) async {
     return await (delete(exercise)..where((tbl) => tbl.id.equals(id))).go();
+  }
+
+  Future<int> deletePlan(int planID) async {
+    deletePlanEx(planID);
+    // await (delete(planEx)..where((tbl) => tbl.planID.equals(planID))).go();
+    return await (delete(planName)..where((tbl) => tbl.planID.equals(planID)))
+        .go();
+  }
+
+  void deletePlanEx(int planID) {
+    (delete(planEx)..where((tbl) => tbl.planID.equals(planID))).go();
   }
 
   Future makeExTrue(int id) async {
