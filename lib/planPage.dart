@@ -130,11 +130,29 @@ class PlanListState extends State<PlanList> {
                     )),
                 SizedBox(
                   height: 50,
-                  width: 300,
-                  child: (submitFlag ? planNameField() : null),
+                  width: (submitFlag ? 300 : null),
+                  child: (submitFlag
+                      ? planNameField()
+                      : Row(
+                          children: const [
+                            Text(
+                              "\t\tExisting plans",
+                              style: TextStyle(
+                                  fontSize: 30, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        )),
                 ),
-                const SizedBox(
+                SizedBox(
                   height: 20,
+                  child: (submitFlag
+                      ? null
+                      : Row(
+                          children: const [
+                            Text(
+                                "\t\t\t\tClick on a plan to view plan details. "),
+                          ],
+                        )),
                 ),
               ],
             ),
