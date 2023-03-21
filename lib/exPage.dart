@@ -169,9 +169,35 @@ class ExPageContent extends State<ExScreen> {
                                   Theme.of(context).colorScheme.tertiary,
                               textStyle: const TextStyle(fontSize: 20)),
                           onPressed: () {
-                            addExercise();
-                            // setState(() {});
-                            Phoenix.rebirth(context);
+                            if (_controllerDes.text.isEmpty ||
+                                _controllerName.text.isEmpty) {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                        backgroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .tertiaryContainer,
+                                        shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(32.0))),
+                                        title: Text("Woah!",
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onTertiaryContainer)),
+                                        content: const Text(
+                                            "The exercise has no title and/ or description. Please redo to save the exercise."),
+                                        actions: <Widget>[
+                                          TextButton(
+                                              onPressed: () =>
+                                                  {Navigator.pop(context)},
+                                              child: const Text("Okay"))
+                                        ],
+                                      ));
+                            } else {
+                              addExercise();
+                              Phoenix.rebirth(context);
+                            }
                           },
                           child: Text(
                             'Submit',
@@ -182,6 +208,14 @@ class ExPageContent extends State<ExScreen> {
                         )),
                   ],
                 )),
+            Divider(
+              endIndent: 20,
+              indent: 20,
+              color:
+                  (Theme.of(context).colorScheme.brightness == Brightness.dark
+                      ? Theme.of(context).colorScheme.onSecondaryContainer
+                      : null),
+            ),
             Expanded(
               flex: 5,
               child: _buildGrid(),

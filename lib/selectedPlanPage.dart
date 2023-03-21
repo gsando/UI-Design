@@ -29,7 +29,31 @@ class OpenPlanPage extends State<OpenPlan> {
           ),
           // shadowColor: Theme.of(context).colorScheme.inversePrimary,
         ),
-        body: Center(child: showPlan()));
+        body: Center(
+            child: Column(
+          children: [
+            Expanded(
+              flex: 1,
+              child: Row(
+                children: const [
+                  // SizedBox(
+                  //   height: 100,
+                  // child:
+                  Text(
+                    "\t\tExercises",
+                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                  ),
+                  // )
+                ],
+              ),
+            ),
+            const Divider(
+              endIndent: 20,
+              indent: 20,
+            ),
+            Expanded(flex: 7, child: showPlan()),
+          ],
+        )));
   }
 
   Widget showPlan() {

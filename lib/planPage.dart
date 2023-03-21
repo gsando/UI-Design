@@ -128,29 +128,50 @@ class PlanListState extends State<PlanList> {
                         ),
                       ],
                     )),
+                Divider(
+                  endIndent: 20,
+                  indent: 20,
+                  color: (Theme.of(context).colorScheme.brightness ==
+                          Brightness.dark
+                      ? Theme.of(context).colorScheme.onSecondaryContainer
+                      : null),
+                ),
                 SizedBox(
                   height: 50,
                   width: (submitFlag ? 300 : null),
                   child: (submitFlag
                       ? planNameField()
                       : Row(
-                          children: const [
+                          children: [
                             Text(
                               "\t\tExisting plans",
                               style: TextStyle(
-                                  fontSize: 30, fontWeight: FontWeight.bold),
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSecondaryContainer),
                             ),
                           ],
                         )),
                 ),
                 SizedBox(
-                  height: 20,
+                  height: 30,
                   child: (submitFlag
                       ? null
                       : Row(
-                          children: const [
-                            Text(
-                                "\t\t\t\tClick on a plan to view plan details. "),
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: Text(
+                                "\t\t\t\tClick on a plan to view plan details. ",
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSecondaryContainer),
+                              ),
+                            ),
                           ],
                         )),
                 ),
@@ -173,35 +194,71 @@ class PlanListState extends State<PlanList> {
       padding: const EdgeInsets.only(bottom: 50),
       child: FloatingActionButton.extended(
         onPressed: () async {
-          Provider.of<MyDatabase>(context, listen: false).insertPlanName(
-              PlanNameCompanion(
-                  titlePlan: drift.Value(_controllerPlanName.text)));
+          if (_controllerPlanName.text.isEmpty) {
+            showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                      backgroundColor:
+                          Theme.of(context).colorScheme.tertiaryContainer,
+                      shape: const RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(32.0))),
+                      title: Text("Woah!",
+                          style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onTertiaryContainer)),
+                      content: const Text(
+                          "The plan has no title. Please add a title to submit/ save the plan."),
+                    ));
+          } else if (_controllerPlanName.text.length < 3) {
+            showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                      backgroundColor:
+                          Theme.of(context).colorScheme.tertiaryContainer,
+                      shape: const RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(32.0))),
+                      title: Text("Woah!",
+                          style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onTertiaryContainer)),
+                      content: const Text(
+                          "The plan must have at least 3 characters. Please change the title to submit/ save the plan."),
+                    ));
+          } else {
+            Provider.of<MyDatabase>(context, listen: false).insertPlanName(
+                PlanNameCompanion(
+                    titlePlan: drift.Value(_controllerPlanName.text)));
 
-          PlanNameData lastPlan =
-              await Provider.of<MyDatabase>(context, listen: false)
-                  .getLastPlanID();
+            PlanNameData lastPlan =
+                await Provider.of<MyDatabase>(context, listen: false)
+                    .getLastPlanID();
 
-          int numOfPlans = lastPlan.planID;
+            int numOfPlans = lastPlan.planID;
 
-          List<ExerciseData> exercises =
-              await Provider.of<MyDatabase>(context, listen: false)
-                  .getExercises();
+            List<ExerciseData> exercises =
+                await Provider.of<MyDatabase>(context, listen: false)
+                    .getExercises();
 
-          if (exercises.isNotEmpty) {
-            for (int i = 0; i < exercises.length; i++) {
-              holder = exercises[i].selected ?? false;
-              // randHold = exercises[i].id;
-              if (holder) {
-                // print(
-                //     "here, holder is true, value of i is $i and id is $randHold");
-                addPlanEx(exercises[i], numOfPlans);
-                Provider.of<MyDatabase>(context, listen: false)
-                    .makeExFalse(exercises[i].id);
+            if (exercises.isNotEmpty) {
+              for (int i = 0; i < exercises.length; i++) {
+                holder = exercises[i].selected ?? false;
+                // randHold = exercises[i].id;
+                if (holder) {
+                  // print(
+                  //     "here, holder is true, value of i is $i and id is $randHold");
+                  addPlanEx(exercises[i], numOfPlans);
+                  Provider.of<MyDatabase>(context, listen: false)
+                      .makeExFalse(exercises[i].id);
+                }
               }
             }
+            _controllerPlanName.clear();
+            Phoenix.rebirth(context);
           }
-          _controllerPlanName.clear();
-          Phoenix.rebirth(context);
         },
         label: Text(
           "Submit plan",

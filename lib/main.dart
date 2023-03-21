@@ -23,7 +23,7 @@ void main() {
 // final _db = MyDatabase();
 
 const seedColor = Color.fromARGB(
-    255, 255, 147, 58); //change this color to change the app's color scheme
+    255, 58, 143, 255); //change this color to change the app's color scheme
 
 final db = MyDatabase();
 bool modeFlag = false;
