@@ -254,8 +254,6 @@ class ExPageContent extends State<ExScreen> {
                     crossAxisSpacing: 20,
                     mainAxisSpacing: 20),
                 controller: _scroll,
-                // reverse: true,
-                // shrinkWrap: true,
                 itemCount: exercises.length,
                 itemBuilder: (context, index) {
                   final exercise = exercises[index];
@@ -265,10 +263,6 @@ class ExPageContent extends State<ExScreen> {
                     child: InkWell(
                       borderRadius:
                           const BorderRadius.all(Radius.circular(12.0)),
-                      // highlightColor: Colors.transparent,
-                      // hoverColor: Theme.of(context).colorScheme.background,
-                      // focusColor: Colors.transparent,
-                      // onHover: (value) => ,
                       onTap: () {
                         showDialog(
                             context: context,
@@ -317,7 +311,7 @@ class ExPageContent extends State<ExScreen> {
                         elevation: 10,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0)),
-                        color: Theme.of(context).colorScheme.tertiaryContainer,
+                        color: Theme.of(context).colorScheme.tertiary,
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
@@ -332,7 +326,7 @@ class ExPageContent extends State<ExScreen> {
                                           fontSize: 20,
                                           color: Theme.of(context)
                                               .colorScheme
-                                              .onTertiaryContainer),
+                                              .onTertiary),
                                     )),
                                     // trailing: const Icon(Icons.more_horiz),
                                     // subtitle: Text(exercise.description.toString()),
@@ -345,7 +339,7 @@ class ExPageContent extends State<ExScreen> {
                                         IconButton(
                                             color: Theme.of(context)
                                                 .colorScheme
-                                                .onTertiaryContainer,
+                                                .secondaryContainer,
                                             onPressed: () => {
                                                   setState(() {
                                                     Provider.of<MyDatabase>(
@@ -360,7 +354,7 @@ class ExPageContent extends State<ExScreen> {
                                         IconButton(
                                             color: Theme.of(context)
                                                 .colorScheme
-                                                .onTertiaryContainer,
+                                                .secondaryContainer,
                                             onPressed: () => {
                                                   showDialog(
                                                       context: context,

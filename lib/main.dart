@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:workout_app/data.dart';
+import 'package:workout_app/homePage.dart';
 import 'navigation.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:provider/provider.dart';
@@ -22,17 +23,17 @@ void main() {
 
 // final _db = MyDatabase();
 
-const seedColor = Color.fromARGB(
-    255, 58, 143, 255); //change this color to change the app's color scheme
+var seedColor =
+    themeColors[0]; //change this color to change the app's color scheme
 
 final db = MyDatabase();
 bool modeFlag = false;
-final _defaulttColorScheme = ColorScheme.fromSeed(
+var colorScheme = ColorScheme.fromSeed(
   brightness: Brightness.light,
   seedColor: seedColor,
 );
 
-final _defaultDarkColorScheme =
+var darkColorScheme =
     ColorScheme.fromSeed(brightness: Brightness.dark, seedColor: seedColor);
 
 class MyApp extends StatefulWidget {
@@ -51,8 +52,7 @@ class _MyApp extends State<MyApp> {
         title: 'Wellness App',
         theme: ThemeData(
           useMaterial3: true,
-          colorScheme:
-              (modeFlag ? _defaultDarkColorScheme : _defaulttColorScheme),
+          colorScheme: (modeFlag ? darkColorScheme : colorScheme),
         ),
         // routes: {
         //   // This route needs to be registered, Because

@@ -4,6 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:workout_app/main.dart';
 
+List<Color> themeColors = const [
+  Color.fromARGB(255, 131, 52, 0),
+  Color.fromARGB(234, 255, 85, 85),
+  Color.fromARGB(234, 255, 248, 148),
+  Color.fromARGB(234, 222, 255, 77),
+  Color.fromARGB(234, 143, 255, 152),
+  Color.fromARGB(234, 126, 255, 227),
+  Color.fromARGB(234, 131, 236, 255),
+  Color.fromARGB(234, 124, 155, 255),
+  Color.fromARGB(234, 234, 128, 255),
+  Color.fromARGB(234, 255, 156, 164),
+];
+
 class Home extends StatefulWidget {
   //creates state for home page
   const Home({Key? key}) : super(key: key);
@@ -59,6 +72,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    bool selectFlag = false;
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
       appBar: AppBar(
@@ -68,6 +82,47 @@ class _HomeState extends State<Home> {
         ),
         backgroundColor: Theme.of(context).colorScheme.secondary,
         actions: [
+          IconButton(
+              onPressed: () => {
+                    showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                              backgroundColor:
+                                  const Color.fromARGB(255, 105, 105, 105),
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(32.0))),
+                              // ignore: sized_box_for_whitespace
+                              content: Container(
+                                // color: Colors.white,
+                                width: 300,
+                                height: 120,
+                                child: GridView.builder(
+                                  gridDelegate:
+                                      const SliverGridDelegateWithMaxCrossAxisExtent(
+                                          maxCrossAxisExtent: 60),
+                                  itemCount: 10,
+                                  itemBuilder: ((context, index) {
+                                    return IconButton(
+                                        onPressed: () => {
+                                              seedColor = themeColors[index],
+                                              updateColor(),
+                                              Phoenix.rebirth(context),
+                                            },
+                                        icon: Icon(
+                                          Icons.circle,
+                                          color: themeColors[index],
+                                          size: 50,
+                                        ));
+                                  }),
+                                ),
+                              ),
+                            ))
+                  },
+              icon: Icon(
+                Icons.brush,
+                color: Theme.of(context).colorScheme.onSecondary,
+              )),
           IconButton(
             icon: Icon(
               Icons.dark_mode,
@@ -132,6 +187,17 @@ class _HomeState extends State<Home> {
             height: kBottomNavigationBarHeight + 20,
             width: MediaQuery.of(context).size.width)
       ])),
+    );
+  }
+
+  void updateColor() {
+    colorScheme = ColorScheme.fromSeed(
+      brightness: Brightness.light,
+      seedColor: seedColor,
+    );
+    darkColorScheme = ColorScheme.fromSeed(
+      brightness: Brightness.dark,
+      seedColor: seedColor,
     );
   }
 }

@@ -1,3 +1,5 @@
+// ignore_for_file: sized_box_for_whitespace, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 // import  'main.dart';
@@ -5,7 +7,6 @@ import 'package:workout_app/data.dart';
 import 'package:workout_app/navigation.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:provider/provider.dart';
-import 'package:workout_app/selectedPlanPage.dart';
 
 bool submitFlag = false;
 bool holder = false;
@@ -227,6 +228,11 @@ class PlanListState extends State<PlanList> {
                                   .onTertiaryContainer)),
                       content: const Text(
                           "The plan must have at least 3 characters. Please change the title to submit/ save the plan."),
+                      actions: <Widget>[
+                        TextButton(
+                            onPressed: () => {Navigator.pop(context)},
+                            child: const Text("Okay"))
+                      ],
                     ));
           } else {
             Provider.of<MyDatabase>(context, listen: false).insertPlanName(
@@ -343,8 +349,8 @@ class PlanListState extends State<PlanList> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0)),
                         color: (holder //no problem here
-                            ? Theme.of(context).colorScheme.tertiary
-                            : Theme.of(context).colorScheme.tertiaryContainer),
+                            ? Theme.of(context).colorScheme.tertiaryContainer
+                            : Theme.of(context).colorScheme.tertiary),
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
@@ -358,10 +364,10 @@ class PlanListState extends State<PlanList> {
                                       color: (holder
                                           ? Theme.of(context)
                                               .colorScheme
-                                              .onTertiary
+                                              .onTertiaryContainer
                                           : Theme.of(context)
                                               .colorScheme
-                                              .onTertiaryContainer)),
+                                              .onTertiary)),
                                 )),
                                 // trailing: const Icon(Icons.more_horiz),
                                 // subtitle: Text(exercise.description.toString()),
@@ -420,22 +426,34 @@ class PlanListState extends State<PlanList> {
                                 context,
                                 listen: false)
                             .getPlanEx(name.planID);
-                        // ignore: use_build_context_synchronously
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => OpenPlan(
-                                      planData: plan,
-                                      planTitle: name.titlePlan,
-                                    )));
+
+                        showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                  title: Text(
+                                    name.titlePlan,
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onTertiary),
+                                  ),
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.tertiary,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(32.0))),
+                                  content: Container(
+                                    width: 400,
+                                    height: 300,
+                                    child: planOnDialog(plan, name.titlePlan),
+                                  ),
+                                ));
                       },
                       child: Card(
                         elevation: 10,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0)),
-                        color: (holder //no problem here
-                            ? Theme.of(context).colorScheme.tertiary
-                            : Theme.of(context).colorScheme.tertiaryContainer),
+                        color: Theme.of(context).colorScheme.tertiary,
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
@@ -446,13 +464,9 @@ class PlanListState extends State<PlanList> {
                                   name.titlePlan.toString(),
                                   style: TextStyle(
                                       fontSize: 20,
-                                      color: (holder
-                                          ? Theme.of(context)
-                                              .colorScheme
-                                              .onTertiary
-                                          : Theme.of(context)
-                                              .colorScheme
-                                              .onTertiaryContainer)),
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSecondary),
                                 )),
                                 // subtitle: Text(name.planID.toString()),
                                 trailing: IconButton(
@@ -503,7 +517,12 @@ class PlanListState extends State<PlanList> {
                                               ));
                                       // Phoenix.rebirth(context);
                                     },
-                                    icon: const Icon(Icons.delete)),
+                                    icon: Icon(
+                                      Icons.delete,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondaryContainer,
+                                    )),
                                 // subtitle: Text(exercise.description.toString()),
                               )
                             ]),
@@ -518,5 +537,39 @@ class PlanListState extends State<PlanList> {
             );
           }),
     );
+  }
+
+  Widget planOnDialog(List<PlanExData> planData, String planTitle) {
+    return GridView.builder(
+        itemCount: planData.length,
+        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: 150),
+        itemBuilder: (context, index) {
+          final plan = planData[index];
+          return Card(
+            elevation: 10,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0)),
+            color: Theme.of(context).colorScheme.tertiaryContainer,
+            child: Column(
+              children: [
+                ListTile(
+                  title: Text(
+                    plan.title,
+                    style: TextStyle(
+                        color:
+                            Theme.of(context).colorScheme.onTertiaryContainer),
+                  ),
+                  subtitle: Text(
+                    plan.description,
+                    style: TextStyle(
+                        color:
+                            Theme.of(context).colorScheme.onTertiaryContainer),
+                  ),
+                )
+              ],
+            ),
+          );
+        });
   }
 }
