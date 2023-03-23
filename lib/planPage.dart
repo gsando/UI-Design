@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 bool submitFlag = false;
 bool holder = false;
+bool favPlanFlag = false;
 
 class PlanList extends StatefulWidget {
   const PlanList({Key? key}) : super(key: key);
@@ -237,7 +238,8 @@ class PlanListState extends State<PlanList> {
           } else {
             Provider.of<MyDatabase>(context, listen: false).insertPlanName(
                 PlanNameCompanion(
-                    titlePlan: drift.Value(_controllerPlanName.text)));
+                    titlePlan: drift.Value(_controllerPlanName.text),
+                    favorite: const drift.Value(false)));
 
             PlanNameData lastPlan =
                 await Provider.of<MyDatabase>(context, listen: false)
@@ -252,10 +254,7 @@ class PlanListState extends State<PlanList> {
             if (exercises.isNotEmpty) {
               for (int i = 0; i < exercises.length; i++) {
                 holder = exercises[i].selected ?? false;
-                // randHold = exercises[i].id;
                 if (holder) {
-                  // print(
-                  //     "here, holder is true, value of i is $i and id is $randHold");
                   addPlanEx(exercises[i], numOfPlans);
                   Provider.of<MyDatabase>(context, listen: false)
                       .makeExFalse(exercises[i].id);
@@ -306,7 +305,7 @@ class PlanListState extends State<PlanList> {
             );
           }
 
-          if (exercises != null) {
+          if (exercises != null && exercises.isNotEmpty) {
             // print("here in the gridbuilder");
             return GridView.builder(
                 gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
@@ -377,17 +376,31 @@ class PlanListState extends State<PlanList> {
                     ),
                   );
                 });
+          } else {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: const [
+                Text(
+                  "No saved exercises, start by clicking the third tab labeled \"Exercise\" and input your desired exercises.",
+                  style: TextStyle(fontSize: 20),
+                ),
+                SizedBox(
+                  height: 80,
+                )
+              ],
+            );
           }
-          return const Text('Santa is coming');
         });
   }
 
   void addPlanEx(ExerciseData exercise, int idofPlan) {
     final entity = PlanExCompanion(
-      planID: drift.Value(idofPlan),
-      title: drift.Value(exercise.title),
-      description: drift.Value(exercise.description),
-    );
+        planID: drift.Value(idofPlan),
+        title: drift.Value(exercise.title),
+        description: drift.Value(exercise.description),
+        minutes: drift.Value(exercise.minutes),
+        seconds: drift.Value(exercise.seconds));
     Provider.of<MyDatabase>(context, listen: false).insertPlanEx(entity);
   }
 
@@ -469,71 +482,102 @@ class PlanListState extends State<PlanList> {
                                           .onSecondary),
                                 )),
                                 // subtitle: Text(name.planID.toString()),
-                                trailing: IconButton(
-                                    onPressed: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) => AlertDialog(
-                                                backgroundColor:
-                                                    Theme.of(context)
-                                                        .colorScheme
-                                                        .tertiaryContainer,
-                                                shape:
-                                                    const RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    32.0))),
-                                                title: Text("Woah!",
-                                                    style: TextStyle(
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .onTertiaryContainer)),
-                                                content: Text(
-                                                    "Are you sure you want to delete \"$nameString\"?"),
-                                                actions: <Widget>[
-                                                  TextButton(
-                                                      onPressed: () => {
-                                                            setState(() {
-                                                              Provider.of<MyDatabase>(
-                                                                      context,
-                                                                      listen:
-                                                                          false)
-                                                                  .deletePlan(name
-                                                                      .planID);
-                                                            }),
-                                                            Phoenix.rebirth(
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                      onPressed: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) => AlertDialog(
+                                                  backgroundColor:
+                                                      Theme.of(context)
+                                                          .colorScheme
+                                                          .tertiaryContainer,
+                                                  shape:
+                                                      const RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius.circular(
+                                                                      32.0))),
+                                                  title: Text("Woah!",
+                                                      style: TextStyle(
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .colorScheme
+                                                              .onTertiaryContainer)),
+                                                  content: Text(
+                                                      "Are you sure you want to delete \"$nameString\"?"),
+                                                  actions: <Widget>[
+                                                    TextButton(
+                                                        onPressed: () => {
+                                                              setState(() {
+                                                                Provider.of<MyDatabase>(
+                                                                        context,
+                                                                        listen:
+                                                                            false)
+                                                                    .deletePlan(
+                                                                        name.planID);
+                                                              }),
+                                                              Phoenix.rebirth(
+                                                                  context),
+                                                            },
+                                                        child: const Text(
+                                                            "Delete")),
+                                                    TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.pop(
                                                                 context),
-                                                          },
-                                                      child:
-                                                          const Text("Delete")),
-                                                  TextButton(
-                                                      onPressed: () =>
-                                                          Navigator.pop(
-                                                              context),
-                                                      child:
-                                                          const Text("Cancel"))
-                                                ],
-                                              ));
-                                      // Phoenix.rebirth(context);
-                                    },
-                                    icon: Icon(
-                                      Icons.delete,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondaryContainer,
-                                    )),
-                                // subtitle: Text(exercise.description.toString()),
-                              )
+                                                        child: const Text(
+                                                            "Cancel"))
+                                                  ],
+                                                ));
+                                        // Phoenix.rebirth(context);
+                                      },
+                                      icon: Icon(
+                                        Icons.delete,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondaryContainer,
+                                      )),
+                                  IconButton(
+                                      onPressed: () => {
+                                            // favPlanFlag = !favPlanFlag,
+                                            Provider.of<MyDatabase>(context,
+                                                    listen: false)
+                                                .makeFavorite(name.planID),
+                                            Phoenix.rebirth(context),
+                                          },
+                                      icon: Icon(
+                                        Icons.favorite_rounded,
+                                        color: ((name.favorite ?? false)
+                                            ? Colors.red
+                                            : Theme.of(context)
+                                                .colorScheme
+                                                .secondaryContainer),
+                                      ))
+                                ],
+                              ),
+                              // subtitle: Text(exercise.description.toString()),
                             ]),
                       ),
                     );
                   });
             }
 
-            return const Text(
-              "No existing plans.",
-              style: TextStyle(fontSize: 20),
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: const [
+                Text(
+                  "No existing plans. Click \"Start New Plan\" to make your first plan.",
+                  style: TextStyle(fontSize: 20),
+                ),
+                SizedBox(
+                  height: 90,
+                )
+              ],
             );
           }),
     );

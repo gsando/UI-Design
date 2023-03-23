@@ -36,6 +36,7 @@ class PlanEx extends Table {
 class PlanName extends Table {
   IntColumn get planID => integer().autoIncrement()();
   TextColumn get titlePlan => text().withLength(min: 1, max: 100)();
+  BoolColumn get favorite => boolean().nullable()();
 }
 
 @DriftDatabase(tables: [Exercise, PlanEx, PlanName])
@@ -44,7 +45,7 @@ class MyDatabase extends _$MyDatabase {
 
   // you should bump this number whenever you change or add a table definition.
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration {
@@ -58,13 +59,14 @@ class MyDatabase extends _$MyDatabase {
           // version 2
           await m.addColumn(exercise, exercise.selected);
           await m.createTable(planName);
+          // await m.addColumn(planName, planName.favorite);
           await m.createTable(planEx);
         }
-        // if (from < 3) {
-        //   // we added the priority property in the change from version 1 or 2
-        //   // to version 3
-        //   await m.addColumn(todos, todos.priority);
-        // }
+        if (from < 4) {
+          // we added the priority property in the change from version 1 or 2
+          // to version 3
+          await m.addColumn(planName, planName.favorite);
+        }
       },
     );
   }
@@ -123,6 +125,12 @@ class MyDatabase extends _$MyDatabase {
 
   Future<bool> updateEx(ExerciseCompanion entity) async {
     return await update(exercise).replace(entity);
+  }
+
+  Future makeFavorite(int planID) async {
+    update(planName).write(const PlanNameCompanion(favorite: Value(false)));
+    return (update(planName)..where((tbl) => tbl.planID.equals(planID)))
+        .write(const PlanNameCompanion(favorite: Value(true)));
   }
 
   Future<int> insertExercise(ExerciseCompanion entity) async {

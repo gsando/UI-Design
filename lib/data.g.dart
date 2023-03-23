@@ -682,8 +682,20 @@ class $PlanNameTable extends PlanName
           GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 100),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
+  static const VerificationMeta _favoriteMeta =
+      const VerificationMeta('favorite');
   @override
-  List<GeneratedColumn> get $columns => [planID, titlePlan];
+  late final GeneratedColumn<bool> favorite =
+      GeneratedColumn<bool>('favorite', aliasedName, true,
+          type: DriftSqlType.bool,
+          requiredDuringInsert: false,
+          defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
+            SqlDialect.sqlite: 'CHECK ("favorite" IN (0, 1))',
+            SqlDialect.mysql: '',
+            SqlDialect.postgres: '',
+          }));
+  @override
+  List<GeneratedColumn> get $columns => [planID, titlePlan, favorite];
   @override
   String get aliasedName => _alias ?? 'plan_name';
   @override
@@ -703,6 +715,10 @@ class $PlanNameTable extends PlanName
     } else if (isInserting) {
       context.missing(_titlePlanMeta);
     }
+    if (data.containsKey('favorite')) {
+      context.handle(_favoriteMeta,
+          favorite.isAcceptableOrUnknown(data['favorite']!, _favoriteMeta));
+    }
     return context;
   }
 
@@ -716,6 +732,8 @@ class $PlanNameTable extends PlanName
           .read(DriftSqlType.int, data['${effectivePrefix}plan_i_d'])!,
       titlePlan: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}title_plan'])!,
+      favorite: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}favorite']),
     );
   }
 
@@ -728,12 +746,17 @@ class $PlanNameTable extends PlanName
 class PlanNameData extends DataClass implements Insertable<PlanNameData> {
   final int planID;
   final String titlePlan;
-  const PlanNameData({required this.planID, required this.titlePlan});
+  final bool? favorite;
+  const PlanNameData(
+      {required this.planID, required this.titlePlan, this.favorite});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['plan_i_d'] = Variable<int>(planID);
     map['title_plan'] = Variable<String>(titlePlan);
+    if (!nullToAbsent || favorite != null) {
+      map['favorite'] = Variable<bool>(favorite);
+    }
     return map;
   }
 
@@ -741,6 +764,9 @@ class PlanNameData extends DataClass implements Insertable<PlanNameData> {
     return PlanNameCompanion(
       planID: Value(planID),
       titlePlan: Value(titlePlan),
+      favorite: favorite == null && nullToAbsent
+          ? const Value.absent()
+          : Value(favorite),
     );
   }
 
@@ -750,6 +776,7 @@ class PlanNameData extends DataClass implements Insertable<PlanNameData> {
     return PlanNameData(
       planID: serializer.fromJson<int>(json['planID']),
       titlePlan: serializer.fromJson<String>(json['titlePlan']),
+      favorite: serializer.fromJson<bool?>(json['favorite']),
     );
   }
   @override
@@ -758,57 +785,72 @@ class PlanNameData extends DataClass implements Insertable<PlanNameData> {
     return <String, dynamic>{
       'planID': serializer.toJson<int>(planID),
       'titlePlan': serializer.toJson<String>(titlePlan),
+      'favorite': serializer.toJson<bool?>(favorite),
     };
   }
 
-  PlanNameData copyWith({int? planID, String? titlePlan}) => PlanNameData(
+  PlanNameData copyWith(
+          {int? planID,
+          String? titlePlan,
+          Value<bool?> favorite = const Value.absent()}) =>
+      PlanNameData(
         planID: planID ?? this.planID,
         titlePlan: titlePlan ?? this.titlePlan,
+        favorite: favorite.present ? favorite.value : this.favorite,
       );
   @override
   String toString() {
     return (StringBuffer('PlanNameData(')
           ..write('planID: $planID, ')
-          ..write('titlePlan: $titlePlan')
+          ..write('titlePlan: $titlePlan, ')
+          ..write('favorite: $favorite')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(planID, titlePlan);
+  int get hashCode => Object.hash(planID, titlePlan, favorite);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is PlanNameData &&
           other.planID == this.planID &&
-          other.titlePlan == this.titlePlan);
+          other.titlePlan == this.titlePlan &&
+          other.favorite == this.favorite);
 }
 
 class PlanNameCompanion extends UpdateCompanion<PlanNameData> {
   final Value<int> planID;
   final Value<String> titlePlan;
+  final Value<bool?> favorite;
   const PlanNameCompanion({
     this.planID = const Value.absent(),
     this.titlePlan = const Value.absent(),
+    this.favorite = const Value.absent(),
   });
   PlanNameCompanion.insert({
     this.planID = const Value.absent(),
     required String titlePlan,
+    this.favorite = const Value.absent(),
   }) : titlePlan = Value(titlePlan);
   static Insertable<PlanNameData> custom({
     Expression<int>? planID,
     Expression<String>? titlePlan,
+    Expression<bool>? favorite,
   }) {
     return RawValuesInsertable({
       if (planID != null) 'plan_i_d': planID,
       if (titlePlan != null) 'title_plan': titlePlan,
+      if (favorite != null) 'favorite': favorite,
     });
   }
 
-  PlanNameCompanion copyWith({Value<int>? planID, Value<String>? titlePlan}) {
+  PlanNameCompanion copyWith(
+      {Value<int>? planID, Value<String>? titlePlan, Value<bool?>? favorite}) {
     return PlanNameCompanion(
       planID: planID ?? this.planID,
       titlePlan: titlePlan ?? this.titlePlan,
+      favorite: favorite ?? this.favorite,
     );
   }
 
@@ -821,6 +863,9 @@ class PlanNameCompanion extends UpdateCompanion<PlanNameData> {
     if (titlePlan.present) {
       map['title_plan'] = Variable<String>(titlePlan.value);
     }
+    if (favorite.present) {
+      map['favorite'] = Variable<bool>(favorite.value);
+    }
     return map;
   }
 
@@ -828,7 +873,8 @@ class PlanNameCompanion extends UpdateCompanion<PlanNameData> {
   String toString() {
     return (StringBuffer('PlanNameCompanion(')
           ..write('planID: $planID, ')
-          ..write('titlePlan: $titlePlan')
+          ..write('titlePlan: $titlePlan, ')
+          ..write('favorite: $favorite')
           ..write(')'))
         .toString();
   }

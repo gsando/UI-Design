@@ -245,7 +245,7 @@ class ExPageContent extends State<ExScreen> {
             );
           }
 
-          if (exercises != null) {
+          if (exercises != null && exercises.isNotEmpty) {
             // print("here in the gridbuilder");
             return GridView.builder(
                 gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
@@ -440,8 +440,18 @@ class ExPageContent extends State<ExScreen> {
                     ),
                   );
                 });
+          } else {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: const [
+                Text(
+                  "No saved exercises, start by inputting a new exercise above.",
+                  style: TextStyle(fontSize: 20),
+                ),
+              ],
+            );
           }
-          return const Text('Santa is coming');
         });
   }
 
