@@ -694,8 +694,23 @@ class $PlanNameTable extends PlanName
             SqlDialect.mysql: '',
             SqlDialect.postgres: '',
           }));
+  static const VerificationMeta _totMinMeta = const VerificationMeta('totMin');
   @override
-  List<GeneratedColumn> get $columns => [planID, titlePlan, favorite];
+  late final GeneratedColumn<int> totMin = GeneratedColumn<int>(
+      'tot_min', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _totSecMeta = const VerificationMeta('totSec');
+  @override
+  late final GeneratedColumn<int> totSec = GeneratedColumn<int>(
+      'tot_sec', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [planID, titlePlan, favorite, totMin, totSec];
   @override
   String get aliasedName => _alias ?? 'plan_name';
   @override
@@ -719,6 +734,14 @@ class $PlanNameTable extends PlanName
       context.handle(_favoriteMeta,
           favorite.isAcceptableOrUnknown(data['favorite']!, _favoriteMeta));
     }
+    if (data.containsKey('tot_min')) {
+      context.handle(_totMinMeta,
+          totMin.isAcceptableOrUnknown(data['tot_min']!, _totMinMeta));
+    }
+    if (data.containsKey('tot_sec')) {
+      context.handle(_totSecMeta,
+          totSec.isAcceptableOrUnknown(data['tot_sec']!, _totSecMeta));
+    }
     return context;
   }
 
@@ -734,6 +757,10 @@ class $PlanNameTable extends PlanName
           .read(DriftSqlType.string, data['${effectivePrefix}title_plan'])!,
       favorite: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}favorite']),
+      totMin: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}tot_min'])!,
+      totSec: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}tot_sec'])!,
     );
   }
 
@@ -747,8 +774,14 @@ class PlanNameData extends DataClass implements Insertable<PlanNameData> {
   final int planID;
   final String titlePlan;
   final bool? favorite;
+  final int totMin;
+  final int totSec;
   const PlanNameData(
-      {required this.planID, required this.titlePlan, this.favorite});
+      {required this.planID,
+      required this.titlePlan,
+      this.favorite,
+      required this.totMin,
+      required this.totSec});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -757,6 +790,8 @@ class PlanNameData extends DataClass implements Insertable<PlanNameData> {
     if (!nullToAbsent || favorite != null) {
       map['favorite'] = Variable<bool>(favorite);
     }
+    map['tot_min'] = Variable<int>(totMin);
+    map['tot_sec'] = Variable<int>(totSec);
     return map;
   }
 
@@ -767,6 +802,8 @@ class PlanNameData extends DataClass implements Insertable<PlanNameData> {
       favorite: favorite == null && nullToAbsent
           ? const Value.absent()
           : Value(favorite),
+      totMin: Value(totMin),
+      totSec: Value(totSec),
     );
   }
 
@@ -777,6 +814,8 @@ class PlanNameData extends DataClass implements Insertable<PlanNameData> {
       planID: serializer.fromJson<int>(json['planID']),
       titlePlan: serializer.fromJson<String>(json['titlePlan']),
       favorite: serializer.fromJson<bool?>(json['favorite']),
+      totMin: serializer.fromJson<int>(json['totMin']),
+      totSec: serializer.fromJson<int>(json['totSec']),
     );
   }
   @override
@@ -786,71 +825,97 @@ class PlanNameData extends DataClass implements Insertable<PlanNameData> {
       'planID': serializer.toJson<int>(planID),
       'titlePlan': serializer.toJson<String>(titlePlan),
       'favorite': serializer.toJson<bool?>(favorite),
+      'totMin': serializer.toJson<int>(totMin),
+      'totSec': serializer.toJson<int>(totSec),
     };
   }
 
   PlanNameData copyWith(
           {int? planID,
           String? titlePlan,
-          Value<bool?> favorite = const Value.absent()}) =>
+          Value<bool?> favorite = const Value.absent(),
+          int? totMin,
+          int? totSec}) =>
       PlanNameData(
         planID: planID ?? this.planID,
         titlePlan: titlePlan ?? this.titlePlan,
         favorite: favorite.present ? favorite.value : this.favorite,
+        totMin: totMin ?? this.totMin,
+        totSec: totSec ?? this.totSec,
       );
   @override
   String toString() {
     return (StringBuffer('PlanNameData(')
           ..write('planID: $planID, ')
           ..write('titlePlan: $titlePlan, ')
-          ..write('favorite: $favorite')
+          ..write('favorite: $favorite, ')
+          ..write('totMin: $totMin, ')
+          ..write('totSec: $totSec')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(planID, titlePlan, favorite);
+  int get hashCode => Object.hash(planID, titlePlan, favorite, totMin, totSec);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is PlanNameData &&
           other.planID == this.planID &&
           other.titlePlan == this.titlePlan &&
-          other.favorite == this.favorite);
+          other.favorite == this.favorite &&
+          other.totMin == this.totMin &&
+          other.totSec == this.totSec);
 }
 
 class PlanNameCompanion extends UpdateCompanion<PlanNameData> {
   final Value<int> planID;
   final Value<String> titlePlan;
   final Value<bool?> favorite;
+  final Value<int> totMin;
+  final Value<int> totSec;
   const PlanNameCompanion({
     this.planID = const Value.absent(),
     this.titlePlan = const Value.absent(),
     this.favorite = const Value.absent(),
+    this.totMin = const Value.absent(),
+    this.totSec = const Value.absent(),
   });
   PlanNameCompanion.insert({
     this.planID = const Value.absent(),
     required String titlePlan,
     this.favorite = const Value.absent(),
+    this.totMin = const Value.absent(),
+    this.totSec = const Value.absent(),
   }) : titlePlan = Value(titlePlan);
   static Insertable<PlanNameData> custom({
     Expression<int>? planID,
     Expression<String>? titlePlan,
     Expression<bool>? favorite,
+    Expression<int>? totMin,
+    Expression<int>? totSec,
   }) {
     return RawValuesInsertable({
       if (planID != null) 'plan_i_d': planID,
       if (titlePlan != null) 'title_plan': titlePlan,
       if (favorite != null) 'favorite': favorite,
+      if (totMin != null) 'tot_min': totMin,
+      if (totSec != null) 'tot_sec': totSec,
     });
   }
 
   PlanNameCompanion copyWith(
-      {Value<int>? planID, Value<String>? titlePlan, Value<bool?>? favorite}) {
+      {Value<int>? planID,
+      Value<String>? titlePlan,
+      Value<bool?>? favorite,
+      Value<int>? totMin,
+      Value<int>? totSec}) {
     return PlanNameCompanion(
       planID: planID ?? this.planID,
       titlePlan: titlePlan ?? this.titlePlan,
       favorite: favorite ?? this.favorite,
+      totMin: totMin ?? this.totMin,
+      totSec: totSec ?? this.totSec,
     );
   }
 
@@ -866,6 +931,12 @@ class PlanNameCompanion extends UpdateCompanion<PlanNameData> {
     if (favorite.present) {
       map['favorite'] = Variable<bool>(favorite.value);
     }
+    if (totMin.present) {
+      map['tot_min'] = Variable<int>(totMin.value);
+    }
+    if (totSec.present) {
+      map['tot_sec'] = Variable<int>(totSec.value);
+    }
     return map;
   }
 
@@ -874,7 +945,9 @@ class PlanNameCompanion extends UpdateCompanion<PlanNameData> {
     return (StringBuffer('PlanNameCompanion(')
           ..write('planID: $planID, ')
           ..write('titlePlan: $titlePlan, ')
-          ..write('favorite: $favorite')
+          ..write('favorite: $favorite, ')
+          ..write('totMin: $totMin, ')
+          ..write('totSec: $totSec')
           ..write(')'))
         .toString();
   }

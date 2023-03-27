@@ -246,6 +246,8 @@ class PlanListState extends State<PlanList> {
                     .getLastPlanID();
 
             int numOfPlans = lastPlan.planID;
+            int totMin = 0;
+            int totSec = 0;
 
             List<ExerciseData> exercises =
                 await Provider.of<MyDatabase>(context, listen: false)
@@ -255,12 +257,16 @@ class PlanListState extends State<PlanList> {
               for (int i = 0; i < exercises.length; i++) {
                 holder = exercises[i].selected ?? false;
                 if (holder) {
+                  totMin += exercises[i].minutes;
+                  totSec += exercises[i].seconds;
                   addPlanEx(exercises[i], numOfPlans);
                   Provider.of<MyDatabase>(context, listen: false)
                       .makeExFalse(exercises[i].id);
                 }
               }
+              updateTime(numOfPlans, totMin, totSec);
             }
+
             _controllerPlanName.clear();
             Phoenix.rebirth(context);
           }
@@ -431,6 +437,8 @@ class PlanListState extends State<PlanList> {
                   itemBuilder: (context, index) {
                     final name = names[index];
                     final String nameString = name.titlePlan;
+                    final min = name.totMin;
+                    final sec = name.totSec;
                     return InkWell(
                       borderRadius:
                           const BorderRadius.all(Radius.circular(12.0)),
@@ -443,12 +451,32 @@ class PlanListState extends State<PlanList> {
                         showDialog(
                             context: context,
                             builder: (context) => AlertDialog(
-                                  title: Text(
-                                    name.titlePlan,
-                                    style: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onTertiary),
+                                  title: Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(
+                                          name.titlePlan,
+                                          style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onTertiary),
+                                        ),
+                                      ),
+                                      const Spacer(
+                                        flex: 1,
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(
+                                          "$min min : $sec sec",
+                                          style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onTertiary),
+                                        ),
+                                      )
+                                    ],
                                   ),
                                   backgroundColor:
                                       Theme.of(context).colorScheme.tertiary,
@@ -458,7 +486,8 @@ class PlanListState extends State<PlanList> {
                                   content: Container(
                                     width: 400,
                                     height: 300,
-                                    child: planOnDialog(plan, name.titlePlan),
+                                    child: planOnDialog(plan, name.titlePlan,
+                                        name.totMin, name.totSec),
                                   ),
                                 ));
                       },
@@ -583,7 +612,8 @@ class PlanListState extends State<PlanList> {
     );
   }
 
-  Widget planOnDialog(List<PlanExData> planData, String planTitle) {
+  Widget planOnDialog(
+      List<PlanExData> planData, String planTitle, int min, int sec) {
     return GridView.builder(
         itemCount: planData.length,
         gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
@@ -615,5 +645,20 @@ class PlanListState extends State<PlanList> {
             ),
           );
         });
+  }
+
+  void updateTime(int planID, int min, int sec) {
+    int minInSec = 0;
+    if (sec == 60) {
+      min++;
+      sec = 0;
+    } else if (sec > 60) {
+      minInSec = int.parse((sec / 60).toStringAsFixed(0));
+      sec -= (minInSec * 60);
+      min += minInSec;
+    }
+
+    Provider.of<MyDatabase>(context, listen: false)
+        .updatePlanTime(planID, min, sec);
   }
 }
