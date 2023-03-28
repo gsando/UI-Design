@@ -6,6 +6,8 @@ import 'package:drift/drift.dart' as drift;
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'main.dart';
 
+// int i = 0;
+
 class ExScreen extends StatefulWidget {
   const ExScreen({Key? key}) : super(key: key);
 
@@ -315,6 +317,23 @@ class ExPageContent extends State<ExScreen> {
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
+                              // ignore: sized_box_for_whitespace
+                              // Expanded(
+                              //     flex: 1,
+                              //     // height: 30,
+                              //     // width: 30,
+                              //     child: Image.asset(
+                              //         'assets/images/31384010_7819378.jpg')),
+                              // Container(
+                              //   width: MediaQuery.of(context).size.width,
+                              //   height: 30,
+                              //   decoration: BoxDecoration(
+                              //     image: DecorationImage(
+                              //       fit: BoxFit.fitWidth,
+                              //       image: AssetImage(rotatePics()),
+                              //     ),
+                              //   ),
+                              // ),
                               Expanded(
                                   flex: 2,
                                   child: ListTile(
@@ -484,4 +503,15 @@ class ExPageContent extends State<ExScreen> {
 
     Provider.of<MyDatabase>(context, listen: false).updateEx(entity);
   }
+
+  // String rotatePics() {
+  //   int hold = assetAddresses.length;
+  //   if (i == (assetAddresses.length)) {
+  //     i = 0;
+  //     // print("This is $i and address.length $hold");
+  //   }
+  //   ++i;
+  //   // print("This is $i and address.length $hold");
+  //   return assetAddresses[i - 1];
+  // }
 }

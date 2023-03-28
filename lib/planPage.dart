@@ -7,6 +7,7 @@ import 'package:workout_app/data.dart';
 import 'package:workout_app/navigation.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:provider/provider.dart';
+import 'package:workout_app/main.dart';
 
 bool submitFlag = false;
 bool holder = false;
@@ -432,7 +433,7 @@ class PlanListState extends State<PlanList> {
               // print("here, names is not null");
               return GridView.builder(
                   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 200),
+                      maxCrossAxisExtent: 200, mainAxisExtent: 150),
                   itemCount: names.length,
                   itemBuilder: (context, index) {
                     final name = names[index];
@@ -497,23 +498,41 @@ class PlanListState extends State<PlanList> {
                             borderRadius: BorderRadius.circular(10.0)),
                         color: Theme.of(context).colorScheme.tertiary,
                         child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
-                              ListTile(
-                                // leading: Icon(Icons.album),
-                                title: Center(
-                                    child: Text(
-                                  name.titlePlan.toString(),
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSecondary),
-                                )),
-                                // subtitle: Text(name.planID.toString()),
+                              Container(
+                                clipBehavior: Clip.hardEdge,
+                                width: MediaQuery.of(context).size.width,
+                                height: 65,
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10.5)),
+                                  image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: AssetImage(rotatePics()),
+                                  ),
+                                ),
                               ),
+                              // ListTile(
+                              //   // leading: Icon(Icons.album),
+                              //   title:
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '\t${name.titlePlan}',
+                                    style: TextStyle(
+                                        fontSize: 25,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSecondary),
+                                  ),
+                                ],
+                              ),
+                              // subtitle: Text(name.planID.toString()),
+                              // ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   IconButton(
                                       onPressed: () {
@@ -590,6 +609,7 @@ class PlanListState extends State<PlanList> {
                               ),
                               // subtitle: Text(exercise.description.toString()),
                             ]),
+                        // ]),
                       ),
                     );
                   });
@@ -660,5 +680,16 @@ class PlanListState extends State<PlanList> {
 
     Provider.of<MyDatabase>(context, listen: false)
         .updatePlanTime(planID, min, sec);
+  }
+
+  String rotatePics() {
+    // int hold = assetAddresses.length;
+    if (i == (assetAddresses.length)) {
+      i = 0;
+      // print("This is $i and address.length $hold");
+    }
+    ++i;
+    // print("This is $i and address.length $hold");
+    return assetAddresses[i - 1];
   }
 }

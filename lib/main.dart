@@ -10,6 +10,20 @@ import 'package:provider/provider.dart';
 // }
 
 final _db = MyDatabase(); //opens the database connection
+int i = 0;
+
+List<String> assetAddresses = [
+  'assets/images/31384010_7819378.jpg',
+  'assets/images/33107626_8006483.jpg',
+  'assets/images/20029964_6216724.jpg', //3
+  'assets/images/6148163_3163475.jpg',
+  'assets/images/20826365_6331545.jpg',
+  'assets/images/22769281_6679192.jpg',
+  'assets/images/20553205_6323198.jpg',
+  'assets/images/32453804_7947855.jpg',
+  'assets/images/32476995_7957723.jpg',
+  // 'assets/images/13802680_5342228.jpg',
+];
 
 void main() {
   runApp(
@@ -61,4 +75,15 @@ class _MyApp extends State<MyApp> {
         // },
         home: const NavBarHandler());
   }
+
+  // String rotatePics() {
+  //   int hold = assetAddresses.length;
+  //   if (i == (assetAddresses.length)) {
+  //     i = 0;
+  //     // print("This is $i and address.length $hold");
+  //   }
+  //   ++i;
+  //   // print("This is $i and address.length $hold");
+  //   return assetAddresses[i - 1];
+  // }
 }

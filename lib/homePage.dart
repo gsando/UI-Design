@@ -165,21 +165,25 @@ class _HomeState extends State<Home> {
                 // ignore: prefer_const_literals_to_create_immutables
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                        shape: const CircleBorder(), //<-- SEE HERE
-                        minimumSize: MediaQuery.of(context).size,
-                        padding: const EdgeInsets.all(20),
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        foregroundColor:
-                            Theme.of(context).colorScheme.onPrimary),
-                    child: const Icon(
-                      //<-- SEE HERE
-                      Icons
-                          .brightness_5_rounded, //auto_awesome_outlined, blur_on
-                      // color: Theme.of(context).colorScheme.tertiaryContainer,
-                      size: 200,
+                  SizedBox(
+                    width: 400,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                          shape: const CircleBorder(), //<-- SEE HERE
+                          minimumSize: MediaQuery.of(context).size,
+                          padding: const EdgeInsets.all(20),
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          foregroundColor:
+                              Theme.of(context).colorScheme.onPrimary),
+                      child: const Icon(
+                        //<-- SEE HERE
+                        Icons
+                            .brightness_5_rounded, //auto_awesome_outlined, blur_on
+                        // color: Theme.of(context).colorScheme.tertiaryContainer,
+                        size: 200,
+                      ),
                     ),
                   ),
                 ])),
