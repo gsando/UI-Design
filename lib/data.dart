@@ -1,7 +1,3 @@
-// import 'dart:collection';
-
-import 'dart:ffi';
-
 import 'package:drift/drift.dart';
 import 'dart:io';
 
@@ -76,16 +72,6 @@ class MyDatabase extends _$MyDatabase {
       },
     );
   }
-
-  // final numberOfPlans = planName.planID.count();
-
-  // Future<int?> countNumPlans() async {
-  //   var countPlans = planName.planID.count();
-
-  //   final query = selectOnly(planName)..addColumns([countPlans]);
-  //   var result = await query.map((row) => row.read(countPlans)).getSingle();
-  //   return result;
-  // }
 
   Future<PlanNameData> getLastPlanID() {
     return (select(planName)
@@ -185,8 +171,10 @@ LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     // put the database file, called db.sqlite here, into the documents folder
     // for your app.
-    final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'db.sqlite'));
+    // final dbFolder = await getApplicationDocumentsDirectory();
+    // final file = File(p.join(dbFolder.path, 'db.sqlite'));
+    final file = File(p.join(Directory.current.path, 'db.sqlite'));
+    // return NativeDatabase.createInBackground(file, logStatements: true);
     return NativeDatabase.createInBackground(file);
   });
 }

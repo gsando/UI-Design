@@ -1,3 +1,6 @@
+// import 'dart:isolate';
+
+// import 'package:drift/isolate.dart';
 import 'package:flutter/material.dart';
 import 'package:workout_app/data.dart';
 import 'package:workout_app/homePage.dart';
@@ -9,7 +12,7 @@ import 'package:provider/provider.dart';
 //   runApp(Phoenix(child: const MyApp()));
 // }
 
-final _db = MyDatabase(); //opens the database connection
+// final db = MyDatabase(); //opens the database connection
 int i = 0;
 
 List<String> assetAddresses = [
@@ -30,7 +33,9 @@ void main() {
     Provider<MyDatabase>(
       create: (context) => MyDatabase(),
       child: Phoenix(child: const MyApp()),
-      dispose: (context, _db) => _db.close(),
+      dispose: (context, db) => {
+        db.close(),
+      },
     ),
   );
 }
@@ -40,7 +45,7 @@ void main() {
 var seedColor =
     themeColors[0]; //change this color to change the app's color scheme
 
-final db = MyDatabase();
+// final db = MyDatabase();
 bool modeFlag = false;
 var colorScheme = ColorScheme.fromSeed(
   brightness: Brightness.light,
